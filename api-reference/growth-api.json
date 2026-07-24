@@ -1,0 +1,4164 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Blink API",
+    "description": "Comprehensive API documentation for Blink.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.blink.store/v1"
+    }
+  ],
+  "paths": {
+    "/cart-recovery/{id}/recover": {
+      "post": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "Manually trigger recovery email",
+        "description": "This endpoint allows you to manually trigger a recovery email for an abandoned cart specified by its ID. It checks the cart's status, and if it hasn't been recovered, it will regenerate the recovery URL using the Blink checkout session and dispatch a recovery email to the customer. It increments the recovery email sent counter regardless of email success.\n\n**Usage:** Useful when you want to manually re-initiate the recovery process for a specific cart.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Successful recovery initiation",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RecoveryResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/cart-recovery/{id}": {
+      "get": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "Retrieve abandoned cart details",
+        "description": "Retrieves details of a specific abandoned cart using its ID. The response includes information about the cart, such as customer email, status, and product details.\n\n**Usage:** Use this endpoint to view details of a forgotten cart, aiding in customer follow-up or analytics.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abandoned cart data retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbandonedCart"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "Delete an abandoned cart",
+        "description": "Deletes a specific abandoned cart by its ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abandoned cart deleted successfully"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/cart-recovery/{id}/link": {
+      "get": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "Generate a recovery link",
+        "description": "Generates a live checkout recovery URL for the abandoned cart without triggering an email. This is useful for injecting the link into custom marketing flows.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Recovery link generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Cart is already recovered"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/cart-recovery": {
+      "get": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "List all abandoned carts",
+        "description": "Lists all abandoned carts for a store with optional filtering by cart status or product ID. Supports pagination.\n\n**Usage:** Retrieve a list of all forgotten carts for a store. This can help in analyzing trends and planning follow-up strategies.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "open",
+                "recovered",
+                "expired"
+              ]
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Abandoned carts retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AbandonedCartsList"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/cart-recovery/trigger": {
+      "post": {
+        "tags": [
+          "Cart Recovery"
+        ],
+        "summary": "Trigger a recovery email",
+        "description": "Manually sends a recovery email for a specified abandoned cart. This endpoint can be used to re-initiate customer communication for carts awaiting recovery.\n\n**Usage:** Directly reach out to customers who have left items in their carts, potentially increasing order completion rates.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RecoveryTriggerRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Email sent successfully"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/affiliates/{id}/conversions": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Get affiliate conversions",
+        "description": "Retrieves a list of orders that are attributed to a specific affiliate based on their membership ID. Provides detailed order information, including the status, amount, and commission.\n\n**Usage:** Allows affiliates to track their performance and commissions by viewing the orders they have influenced.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Affiliate conversions retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateConversions"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/affiliates/{id}": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Retrieve affiliate details",
+        "description": "Retrieves details of a specific affiliate membership using its ID. It includes affiliate profile information and conversion statistics.\n\n**Usage:** Use this to get detailed insights into an individual affiliate's performance, including total revenue and pending commissions.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Affiliate details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Update affiliate details",
+        "description": "Updates the details of a specific affiliate membership using its ID. You can change the status of the affiliation.\n\n**Usage:** Utilize this endpoint to modify affiliate statuses like changing them to 'approved', 'banned', etc.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AffiliateUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Affiliate details updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/affiliates/invite": {
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Invite an affiliate",
+        "description": "Programmatically sends an email invitation to a potential affiliate. The email contains a link for joining the affiliate program.\n\n**Usage:** Useful for programatically adding affiliates to expand marketing reach.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AffiliateInviteRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Invitation sent successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateInviteResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/affiliates/links": {
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Generate custom affiliate link",
+        "description": "Generates a custom tracking link for an affiliate membership using a specific code.\n\n**Usage:** Allows affiliates to create personalized links that can track their referral traffic and conversions.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AffiliateLinkRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Tracking link created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateLinkResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/affiliates": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "List affiliates",
+        "description": "Retrieves a list of affiliates for a store, with optional filtering by status and pagination support.\n\n**Usage:** Analyze and manage affiliates for promotional strategies.",
+        "parameters": [
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Affiliates list retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliatesListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Update affiliate membership status",
+        "description": "Approves, rejects, or bans an affiliate's application based on the action specified.\n\n**Usage:** Control the participation of affiliates based on their performance or issues.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AffiliateMembershipUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Affiliate membership status updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AffiliateMembershipResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/discounts/{id}": {
+      "get": {
+        "tags": [
+          "Discounts"
+        ],
+        "summary": "Retrieve discount details",
+        "description": "Fetches details of a specific discount by its ID including code, type, and associated products.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discount details retrieved",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountDetailResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Discounts"
+        ],
+        "summary": "Update discount details",
+        "description": "Updates information for a specific discount, such as code, amount, or expiration date. Use to edit existing discount offers.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountUpdateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Discount updated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Discounts"
+        ],
+        "summary": "Delete a discount",
+        "description": "Deletes a discount from the database. This is irreversible and should be used when the discount is no longer needed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discount deleted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountDeleteResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Not Found"
+          }
+        }
+      }
+    },
+    "/discounts": {
+      "get": {
+        "tags": [
+          "Discounts"
+        ],
+        "summary": "List discounts",
+        "description": "Retrieves a list of discounts for a store with optional filtering by status. Supports pagination.",
+        "parameters": [
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Discounts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountsListResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Discounts"
+        ],
+        "summary": "Create a new discount",
+        "description": "Creates a new discount for the store. Ensures unique discount code within the store.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DiscountCreateRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Discount created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DiscountDetailResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "409": {
+            "description": "Conflict"
+          }
+        }
+      }
+    },
+    "/splits": {
+      "get": {
+        "tags": [
+          "Splits"
+        ],
+        "summary": "List splits",
+        "description": "Returns a paginated list of revenue splits for the store.",
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Splits"
+        ],
+        "summary": "Create a split",
+        "description": "Creates a new revenue split and automatically invites the recipients.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "name",
+                  "apply_to_all_products",
+                  "recipients"
+                ],
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "apply_to_all_products": {
+                    "type": "boolean"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "type": "string"
+                        },
+                        "share_type": {
+                          "type": "string",
+                          "enum": [
+                            "percentage",
+                            "fixed"
+                          ]
+                        },
+                        "share_value": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Split created successfully"
+          }
+        }
+      }
+    },
+    "/splits/{id}": {
+      "get": {
+        "tags": [
+          "Splits"
+        ],
+        "summary": "Retrieve a split",
+        "description": "Retrieves the details of an existing revenue split.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          }
+        }
+      },
+      "patch": {
+        "tags": [
+          "Splits"
+        ],
+        "summary": "Update a split",
+        "description": "Updates the specified split. When updating the recipients or products array, the entire array is replaced with the newly provided one.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string"
+                  },
+                  "apply_to_all_products": {
+                    "type": "boolean"
+                  },
+                  "products": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    }
+                  },
+                  "recipients": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "email": {
+                          "type": "string"
+                        },
+                        "store_id": {
+                          "type": "string"
+                        },
+                        "share_type": {
+                          "type": "string",
+                          "enum": [
+                            "percentage",
+                            "fixed"
+                          ]
+                        },
+                        "share_value": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Split updated successfully"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Splits"
+        ],
+        "summary": "Delete a split",
+        "description": "Permanently deletes a revenue split.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Split deleted successfully"
+          }
+        }
+      }
+    },
+    "/geo-pricing": {
+      "get": {
+        "tags": [
+          "Geo Pricing"
+        ],
+        "summary": "List Geo-Pricing Rules",
+        "description": "Lists purchasing power parity (PPP) and strict geo-pricing rules.",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Geo Pricing"
+        ],
+        "summary": "Create Geo-Pricing Rule",
+        "description": "Automatically sets up localized pricing overrides for specific countries.\n\n**Usage:** Global gaming studios deploying a script to adjust virtual currency prices dynamically across 50+ countries based on local inflation.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "country_code": {
+                    "type": "string"
+                  },
+                  "discount_percentage": {
+                    "type": "number"
+                  },
+                  "fixed_price": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/affiliates/sso": {
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Generate Single Sign-On (SSO) URL",
+        "description": "Generates a magic link URL to seamlessly log an affiliate into their dashboard.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string",
+                    "description": "The affiliate email address."
+                  },
+                  "redirect_to": {
+                    "type": "string",
+                    "description": "Optional URL to redirect the user to after login."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "SSO URL generated",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "sso_url": {
+                          "type": "string",
+                          "description": "The magic link URL."
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/affiliates/{id}/links": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Get Affiliate Links",
+        "description": "Fetch tracking links for a specific affiliate membership.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The affiliate membership ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of tracking links",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "id": {
+                            "type": "string"
+                          },
+                          "code": {
+                            "type": "string"
+                          },
+                          "created_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          },
+                          "clicks_count": {
+                            "type": "integer",
+                            "description": "Number of clicks on the link"
+                          },
+                          "conversions_count": {
+                            "type": "integer",
+                            "description": "Number of conversions driven by the link"
+                          },
+                          "total_earnings": {
+                            "type": "integer",
+                            "description": "Total commission earned in cents"
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/affiliate-program": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Get Affiliate Program Settings",
+        "description": "Fetch the active affiliate program configuration for the store.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Affiliate program settings",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "name": {
+                          "type": "string"
+                        },
+                        "commission_type": {
+                          "type": "string"
+                        },
+                        "commission_amount": {
+                          "type": "number"
+                        },
+                        "cookie_duration_days": {
+                          "type": "number"
+                        },
+                        "minimum_payout_usd": {
+                          "type": "number"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/affiliates/register": {
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Register a new affiliate",
+        "description": "Headless registration for custom storefronts. Provisions a user identity, creates an affiliate profile, and enrolls them into the store's default affiliate program.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "full_name": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "email",
+                  "full_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Affiliate registered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "status": {
+                          "type": "string",
+                          "enum": [
+                            "pending",
+                            "approved"
+                          ]
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/affiliates/{id}/payout-setup": {
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Initialize Payout Setup",
+        "description": "Generates a secure Stripe Connect onboarding link for the affiliate. Handles the creation of the underlying Stripe Express account if it doesn't exist.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The affiliate membership ID."
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "return_url": {
+                    "type": "string"
+                  },
+                  "refresh_url": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "return_url"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Stripe Connect onboarding link generated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/affiliates/{id}/payouts": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Retrieve Payout Balances",
+        "description": "Securely fetches the affiliate's live Available and Pending balances directly from Stripe, along with their recent payout transfers and their Stripe account setup status.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The affiliate membership ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Balances and transfers retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "account_status": {
+                          "type": "string",
+                          "enum": [
+                            "not_setup",
+                            "pending_onboarding",
+                            "active"
+                          ]
+                        },
+                        "available": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "amount": {
+                                "type": "integer"
+                              },
+                              "currency": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "pending": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "amount": {
+                                "type": "integer"
+                              },
+                              "currency": {
+                                "type": "string"
+                              }
+                            }
+                          }
+                        },
+                        "recent_transfers": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "amount": {
+                                "type": "integer"
+                              },
+                              "currency": {
+                                "type": "string"
+                              },
+                              "created": {
+                                "type": "integer"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "storeIdHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-store-id"
+      }
+    },
+    "schemas": {
+      "RecoveryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cart_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "recovery_emails_sent": {
+                "type": "integer"
+              },
+              "recovery_url": {
+                "type": "string"
+              },
+              "email_sent": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "AbandonedCart": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "recovery_emails_sent": {
+                "type": "integer"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stripe_checkout_session_id": {
+                "type": "string"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AbandonedCartsList": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AbandonedCart"
+            }
+          }
+        }
+      },
+      "RecoveryTriggerRequest": {
+        "type": "object",
+        "properties": {
+          "cart_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cart_id"
+        ]
+      },
+      "AffiliateConversions": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "net_amount": {
+                  "type": "number"
+                },
+                "affiliate_commission_cents": {
+                  "type": "integer"
+                },
+                "affiliate_payout_status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "program_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "affiliate": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "display_name": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  },
+                  "social_links": {
+                    "type": "string"
+                  }
+                }
+              },
+              "stats": {
+                "type": "object",
+                "properties": {
+                  "conversions": {
+                    "type": "integer"
+                  },
+                  "total_revenue": {
+                    "type": "number"
+                  },
+                  "total_commission": {
+                    "type": "integer"
+                  },
+                  "pending_commission": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "AffiliateInviteRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "AffiliateInviteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AffiliateLinkRequest": {
+        "type": "object",
+        "properties": {
+          "membership_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "membership_id",
+          "code"
+        ]
+      },
+      "AffiliateLinkResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "membership_id": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "clicks_count": {
+                "type": "integer"
+              },
+              "conversions_count": {
+                "type": "integer"
+              },
+              "total_earnings": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "AffiliatesListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "program_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "program": {
+                  "type": "object",
+                  "properties": {
+                    "store_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "affiliate": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "display_name": {
+                      "type": "string"
+                    },
+                    "website": {
+                      "type": "string"
+                    },
+                    "social_links": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateMembershipUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "membership_id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject",
+              "ban"
+            ]
+          }
+        },
+        "required": [
+          "membership_id",
+          "action"
+        ]
+      },
+      "AffiliateMembershipResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "AudienceDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "total_orders": {
+                "type": "integer"
+              },
+              "lifetime_revenue": {
+                "type": "number"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "AudienceUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "AudienceUnsubscribeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "BumpsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "badge_title": {
+                  "type": "string"
+                },
+                "badge_color": {
+                  "type": "string"
+                },
+                "sales": {
+                  "type": "integer"
+                },
+                "revenue": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "deliverables": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "button_label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "BumpCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "badge_title": {
+            "type": "string"
+          },
+          "badge_color": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "price"
+        ]
+      },
+      "BumpResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "badge_title": {
+                "type": "string"
+              },
+              "badge_color": {
+                "type": "string"
+              },
+              "sales": {
+                "type": "integer"
+              },
+              "revenue": {
+                "type": "integer"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CheckoutSessionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "payment_status": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "amount_total": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "variant_id": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CheckoutsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutSessionResponse"
+            }
+          }
+        }
+      },
+      "CheckoutCreateRequest": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "variant_id": {
+            "type": "string"
+          },
+          "customer_email": {
+            "type": "string"
+          },
+          "discount_code": {
+            "type": "string"
+          },
+          "affiliate_code": {
+            "type": "string"
+          },
+          "splits": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "success_url": {
+            "type": "string"
+          },
+          "cancel_url": {
+            "type": "string"
+          },
+          "ui_mode": {
+            "type": "string"
+          },
+          "return_url": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "seat_quantity": {
+            "type": "integer",
+            "description": "Pre-filled seat quantity"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "layout": {
+                "type": "string",
+                "enum": [
+                  "default",
+                  "overlay",
+                  "minimal",
+                  "inline"
+                ]
+              },
+              "hide_carousel": {
+                "type": "boolean"
+              },
+              "hide_title": {
+                "type": "boolean"
+              },
+              "hide_discount": {
+                "type": "boolean"
+              },
+              "hide_refund": {
+                "type": "boolean"
+              },
+              "hide_support": {
+                "type": "boolean"
+              },
+              "show_desc": {
+                "type": "boolean"
+              },
+              "show_preview": {
+                "type": "boolean"
+              },
+              "button_text": {
+                "type": "string"
+              },
+              "locale": {
+                "type": "string"
+              },
+              "product_name": {
+                "type": "string"
+              },
+              "custom_fields": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "custom_checkout_id": {
+            "type": "string",
+            "description": "UUID of the custom checkout design"
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "CustomerMeterBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "meter_id": {
+                  "type": "string"
+                },
+                "subscription_id": {
+                  "type": "string"
+                },
+                "total_credits": {
+                  "type": "number"
+                },
+                "used_credits": {
+                  "type": "number"
+                },
+                "rollover_unused": {
+                  "type": "boolean"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "remaining_credits": {
+                  "type": "number"
+                },
+                "meter": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "event_name": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "net_amount": {
+                  "type": "number"
+                },
+                "tax_amount": {
+                  "type": "number"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "customer_country": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PortalSessionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CustomerDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "total_orders": {
+                "type": "integer"
+              },
+              "lifetime_revenue": {
+                "type": "number"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CustomerUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerSubscriptionsResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "current_period_end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "cancel_at_period_end": {
+                  "type": "boolean"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomersListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "total_orders": {
+                  "type": "integer"
+                },
+                "lifetime_revenue": {
+                  "type": "number"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "DiscountDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "discount_type": {
+                "type": "string"
+              },
+              "discount_amount": {
+                "type": "number"
+              },
+              "max_redemptions": {
+                "type": "integer"
+              },
+              "starts_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string"
+              },
+              "product_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DiscountUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "discount_type": {
+            "type": "string"
+          },
+          "discount_amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "max_redemptions": {
+            "type": "integer"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "product_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DiscountDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "DiscountsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountDetailResponse"
+            }
+          }
+        }
+      },
+      "DiscountCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "discount_type": {
+            "type": "string",
+            "enum": [
+              "percentage",
+              "fixed"
+            ]
+          },
+          "discount_amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "max_redemptions": {
+            "type": "integer"
+          },
+          "product_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "discount_type",
+          "discount_amount"
+        ]
+      },
+      "DisputesListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "EmailBroadcastRequest": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "html": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "target_all": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "subject",
+          "html"
+        ]
+      },
+      "EmailBroadcastResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "EventTrackRequest": {
+        "type": "object",
+        "properties": {
+          "eventName": {
+            "type": "string"
+          },
+          "eventData": {
+            "type": "object"
+          },
+          "url": {
+            "type": "string"
+          },
+          "referrer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventName"
+        ]
+      },
+      "EventTrackResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "FileDownloadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "FileDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "button_label": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "FileDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "FileListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "button_label": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyRevokeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "customer": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "order": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "activation_limit": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "LicenseKeyActivateRequest": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_key"
+        ]
+      },
+      "LicenseKeyActivateResponse": {
+        "type": "object",
+        "properties": {
+          "activated": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeysListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LicenseKeyDetail"
+            }
+          }
+        }
+      },
+      "LicenseKeyDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "activation_limit": {
+            "type": "integer"
+          },
+          "activations": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LicenseKeyValidateRequest": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_key"
+        ]
+      },
+      "LicenseKeyValidateResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "customer_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "MeterDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "event_name": {
+                "type": "string"
+              },
+              "aggregation_type": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "MeterUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "MetersListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeterDetail"
+            }
+          }
+        }
+      },
+      "MeterDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "event_name": {
+            "type": "string"
+          },
+          "aggregation_type": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MeterCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "event_name": {
+            "type": "string"
+          },
+          "aggregation_type": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "default": "unit"
+          }
+        },
+        "required": [
+          "name",
+          "event_name",
+          "aggregation_type"
+        ]
+      },
+      "MetricsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "end": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "orders": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "gross_revenue": {
+                    "type": "number"
+                  },
+                  "net_revenue": {
+                    "type": "number"
+                  }
+                }
+              },
+              "subscriptions": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "integer"
+                  },
+                  "mrr": {
+                    "type": "number"
+                  },
+                  "arr": {
+                    "type": "number"
+                  }
+                }
+              },
+              "customers": {
+                "type": "object",
+                "properties": {
+                  "new_in_period": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrganizationsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "organization_name": {
+                  "type": "string"
+                },
+                "billing_email": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrganizationCreateRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "organization_name": {
+            "type": "string"
+          },
+          "billing_email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "organization_name"
+        ]
+      },
+      "OrganizationDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "organization_name": {
+                "type": "string"
+              },
+              "billing_email": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "PayoutsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "ProductDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "preview_link": {
+                "type": "string"
+              },
+              "pricing_model": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "subscription_interval": {
+                "type": "string"
+              },
+              "trial_days": {
+                "type": "integer"
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "integer"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "subscription_interval": {
+                      "type": "string"
+                    },
+                    "trial_days": {
+                      "type": "integer"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              },
+              "deliverables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "subscription_interval": {
+            "type": "string"
+          },
+          "trial_days": {
+            "type": "integer"
+          }
+        }
+      },
+      "ProductArchiveResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "archived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "is_active": {
+                  "type": "boolean"
+                },
+                "subscription_interval": {
+                  "type": "string"
+                },
+                "trial_days": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "price"
+        ]
+      },
+      "ProductVariantDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "is_active": {
+                "type": "boolean"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProductVariantDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ProductsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "preview_link": {
+                  "type": "string"
+                },
+                "pricing_model": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "subscription_interval": {
+                  "type": "string"
+                },
+                "trial_days": {
+                  "type": "integer"
+                },
+                "requires_license_key": {
+                  "type": "boolean"
+                },
+                "cart_recovery_enabled": {
+                  "type": "boolean"
+                },
+                "customer_portal_visibility": {
+                  "type": "string"
+                },
+                "variants": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "integer"
+                      },
+                      "is_active": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "file_url": {
+                        "type": "string"
+                      },
+                      "position": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "pricing_model": {
+            "type": "string",
+            "enum": [
+              "one_time",
+              "subscription",
+              "pay_what_you_want",
+              "tiered"
+            ]
+          },
+          "price": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          },
+          "subscription_interval": {
+            "type": "string"
+          },
+          "trial_days": {
+            "type": "integer"
+          },
+          "preview_link": {
+            "type": "string"
+          },
+          "requires_license_key": {
+            "type": "boolean"
+          },
+          "license_key_activation_limit": {
+            "type": "integer"
+          },
+          "cart_recovery_enabled": {
+            "type": "boolean"
+          },
+          "customer_portal_visibility": {
+            "type": "string",
+            "default": "visible"
+          }
+        },
+        "required": [
+          "name",
+          "pricing_model",
+          "price"
+        ]
+      },
+      "RefundsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "SubscriptionInvoicesResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "SubscriptionDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "variant_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "current_period_end": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "cancel_at_period_end": {
+                "type": "boolean"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stripe_subscription_id": {
+                "type": "string"
+              },
+              "stripe_customer_id": {
+                "type": "string"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "pricing_model": {
+                    "type": "string"
+                  },
+                  "subscription_interval": {
+                    "type": "string"
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "integer"
+                  },
+                  "subscription_interval": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SubscriptionUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "cancel",
+              "cancel_immediately",
+              "resume"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "SubscriptionsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "current_period_end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "cancel_at_period_end": {
+                  "type": "boolean"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "stripe_customer_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Splits",
+      "description": "Manage revenue splits and automatic payouts"
+    }
+  ]
+}

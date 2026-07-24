@@ -1,0 +1,3230 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Blink API",
+    "description": "Comprehensive API documentation for Blink.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://api.blink.store/v1"
+    }
+  ],
+  "paths": {
+    "/disputes": {
+      "get": {
+        "tags": [
+          "Disputes"
+        ],
+        "summary": "List Blink disputes",
+        "description": "Fetches a list of disputes associated with the store's connected Blink account. Supports limiting results.",
+        "parameters": [
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Disputes retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DisputesListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/payouts": {
+      "get": {
+        "tags": [
+          "Payouts"
+        ],
+        "summary": "List Blink payouts",
+        "description": "Fetches a list of Blink payouts for the store identified by `x-store-id`. Requires a connected Blink account. Supports limiting the result set.\n\n**Usage:** Useful for financial reconciliation and tracking payouts from Blink.",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Payouts retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PayoutsListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/refunds": {
+      "get": {
+        "tags": [
+          "Refunds"
+        ],
+        "summary": "List refunds",
+        "description": "Retrieves a list of refunds associated with a store's connected Blink account. Supports limiting the results.\n\n**Usage:** Useful for financial reconciliation and tracking refund activities within the store.",
+        "parameters": [
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Refunds retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RefundsListResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/subscription-invoices": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "List subscription invoices",
+        "description": "Fetches a list of subscription invoices for the store. Supports filtering by status, subscription ID, and customer ID. Supports pagination.\n\n**Usage:** Useful for tracking and managing subscription invoices and financial records.",
+        "parameters": [
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "schema": {
+              "type": "integer",
+              "default": 50
+            }
+          },
+          {
+            "name": "status",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "subscription_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "customer_id",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Invoices retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SubscriptionInvoicesResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/invoices": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "List all invoices",
+        "description": "Returns a paginated list of all invoices generated by subscriptions or manual billing.",
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/invoices/{id}": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Retrieve an invoice",
+        "description": "Retrieves details of a specific invoice.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/invoices/{id}/pdf": {
+      "get": {
+        "tags": [
+          "Invoices"
+        ],
+        "summary": "Download Invoice PDF",
+        "description": "Generates and downloads a secure PDF receipt of the invoice.\n\n**Usage:** Enterprise agencies building custom portals where B2B clients can download their tax-compliant PDF receipts on demand.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/taxes/calculate": {
+      "post": {
+        "tags": [
+          "Taxes"
+        ],
+        "summary": "Calculate Taxes Dynamically",
+        "description": "Calculates precise digital tax rates based on the buyer's IP and billing address before charging them.\n\n**Usage:** Hybrid hardware/software companies building 100% custom checkout flows that need to show real-time tax line items to the user before they click 'Pay'.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "amount": {
+                    "type": "number"
+                  },
+                  "country": {
+                    "type": "string"
+                  },
+                  "postal_code": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/taxes/validate-vat": {
+      "post": {
+        "tags": [
+          "Taxes"
+        ],
+        "summary": "Validate VAT Number",
+        "description": "Validates an EU VAT or international tax ID via the VIES network to automatically apply reverse-charge exemptions.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "vat_number": {
+                    "type": "string"
+                  },
+                  "country": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful response"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "401": {
+            "description": "Unauthorized"
+          }
+        }
+      }
+    },
+    "/v1/payouts/{id}": {
+      "get": {
+        "summary": "Retrieve a payout",
+        "description": "Retrieves the details of an existing payout.",
+        "tags": [
+          "Payouts"
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the payout to retrieve.",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved payout details.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "description": "The payout object."
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Unauthorized"
+          },
+          "404": {
+            "description": "Payout not found"
+          }
+        }
+      }
+    },
+    "/v1/payees": {
+      "post": {
+        "tags": [
+          "Payees"
+        ],
+        "summary": "Initialize Payee Profile",
+        "description": "Generates a secure Stripe Connect onboarding link for a headless user. Handles the creation of the underlying Stripe Express account.",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "email",
+                  "return_url"
+                ],
+                "properties": {
+                  "email": {
+                    "type": "string"
+                  },
+                  "return_url": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "onboarding_url": {
+                          "type": "string"
+                        },
+                        "onboarding_complete": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/payees/{id}": {
+      "get": {
+        "tags": [
+          "Payees"
+        ],
+        "summary": "Retrieve Payee Status",
+        "description": "Fetches the onboarding status of a payee to determine if they can receive payouts.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "email": {
+                          "type": "string"
+                        },
+                        "onboarding_complete": {
+                          "type": "boolean"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer"
+      },
+      "storeIdHeader": {
+        "type": "apiKey",
+        "in": "header",
+        "name": "x-store-id"
+      }
+    },
+    "schemas": {
+      "RecoveryResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "cart_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "recovery_emails_sent": {
+                "type": "integer"
+              },
+              "recovery_url": {
+                "type": "string"
+              },
+              "email_sent": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "AbandonedCart": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "amount": {
+                "type": "number"
+              },
+              "status": {
+                "type": "string"
+              },
+              "recovery_emails_sent": {
+                "type": "integer"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stripe_checkout_session_id": {
+                "type": "string"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AbandonedCartsList": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AbandonedCart"
+            }
+          }
+        }
+      },
+      "RecoveryTriggerRequest": {
+        "type": "object",
+        "properties": {
+          "cart_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "cart_id"
+        ]
+      },
+      "AffiliateConversions": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "net_amount": {
+                  "type": "number"
+                },
+                "affiliate_commission_cents": {
+                  "type": "integer"
+                },
+                "affiliate_payout_status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "customer": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "email": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "program_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "affiliate": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "display_name": {
+                    "type": "string"
+                  },
+                  "website": {
+                    "type": "string"
+                  },
+                  "social_links": {
+                    "type": "string"
+                  }
+                }
+              },
+              "stats": {
+                "type": "object",
+                "properties": {
+                  "conversions": {
+                    "type": "integer"
+                  },
+                  "total_revenue": {
+                    "type": "number"
+                  },
+                  "total_commission": {
+                    "type": "integer"
+                  },
+                  "pending_commission": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "status"
+        ]
+      },
+      "AffiliateInviteRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "AffiliateInviteResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "AffiliateLinkRequest": {
+        "type": "object",
+        "properties": {
+          "membership_id": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "membership_id",
+          "code"
+        ]
+      },
+      "AffiliateLinkResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "membership_id": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "clicks_count": {
+                "type": "integer"
+              },
+              "conversions_count": {
+                "type": "integer"
+              },
+              "total_earnings": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "AffiliatesListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "program_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "program": {
+                  "type": "object",
+                  "properties": {
+                    "store_id": {
+                      "type": "string"
+                    }
+                  }
+                },
+                "affiliate": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "display_name": {
+                      "type": "string"
+                    },
+                    "website": {
+                      "type": "string"
+                    },
+                    "social_links": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "AffiliateMembershipUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "membership_id": {
+            "type": "string"
+          },
+          "action": {
+            "type": "string",
+            "enum": [
+              "approve",
+              "reject",
+              "ban"
+            ]
+          }
+        },
+        "required": [
+          "membership_id",
+          "action"
+        ]
+      },
+      "AffiliateMembershipResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "AudienceDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "total_orders": {
+                "type": "integer"
+              },
+              "lifetime_revenue": {
+                "type": "number"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "AudienceUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "AudienceUnsubscribeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "BumpsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "badge_title": {
+                  "type": "string"
+                },
+                "badge_color": {
+                  "type": "string"
+                },
+                "sales": {
+                  "type": "integer"
+                },
+                "revenue": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "deliverables": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "type": {
+                        "type": "string"
+                      },
+                      "title": {
+                        "type": "string"
+                      },
+                      "description": {
+                        "type": "string"
+                      },
+                      "url": {
+                        "type": "string"
+                      },
+                      "button_label": {
+                        "type": "string"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "BumpCreateRequest": {
+        "type": "object",
+        "properties": {
+          "title": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "badge_title": {
+            "type": "string"
+          },
+          "badge_color": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "title",
+          "price"
+        ]
+      },
+      "BumpResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "badge_title": {
+                "type": "string"
+              },
+              "badge_color": {
+                "type": "string"
+              },
+              "sales": {
+                "type": "integer"
+              },
+              "revenue": {
+                "type": "integer"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CheckoutSessionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "payment_status": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "amount_total": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "variant_id": {
+                "type": "string"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CheckoutsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CheckoutSessionResponse"
+            }
+          }
+        }
+      },
+      "CheckoutCreateRequest": {
+        "type": "object",
+        "properties": {
+          "product_id": {
+            "type": "string"
+          },
+          "variant_id": {
+            "type": "string"
+          },
+          "customer_email": {
+            "type": "string"
+          },
+          "discount_code": {
+            "type": "string"
+          },
+          "affiliate_code": {
+            "type": "string"
+          },
+          "splits": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          },
+          "success_url": {
+            "type": "string"
+          },
+          "cancel_url": {
+            "type": "string"
+          },
+          "ui_mode": {
+            "type": "string"
+          },
+          "return_url": {
+            "type": "string"
+          },
+          "metadata": {
+            "type": "object"
+          },
+          "seat_quantity": {
+            "type": "integer",
+            "description": "Pre-filled seat quantity"
+          },
+          "options": {
+            "type": "object",
+            "properties": {
+              "layout": {
+                "type": "string",
+                "enum": [
+                  "default",
+                  "overlay",
+                  "minimal",
+                  "inline"
+                ]
+              },
+              "hide_carousel": {
+                "type": "boolean"
+              },
+              "hide_title": {
+                "type": "boolean"
+              },
+              "hide_discount": {
+                "type": "boolean"
+              },
+              "hide_refund": {
+                "type": "boolean"
+              },
+              "hide_support": {
+                "type": "boolean"
+              },
+              "show_desc": {
+                "type": "boolean"
+              },
+              "show_preview": {
+                "type": "boolean"
+              },
+              "button_text": {
+                "type": "string"
+              },
+              "locale": {
+                "type": "string"
+              },
+              "product_name": {
+                "type": "string"
+              },
+              "custom_fields": {
+                "type": "array",
+                "items": {
+                  "type": "object"
+                }
+              }
+            }
+          },
+          "custom_checkout_id": {
+            "type": "string",
+            "description": "UUID of the custom checkout design"
+          }
+        },
+        "required": [
+          "product_id"
+        ]
+      },
+      "CustomerMeterBalanceResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "meter_id": {
+                  "type": "string"
+                },
+                "subscription_id": {
+                  "type": "string"
+                },
+                "total_credits": {
+                  "type": "number"
+                },
+                "used_credits": {
+                  "type": "number"
+                },
+                "rollover_unused": {
+                  "type": "boolean"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "remaining_credits": {
+                  "type": "number"
+                },
+                "meter": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "event_name": {
+                      "type": "string"
+                    },
+                    "unit": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerOrdersResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "amount": {
+                  "type": "number"
+                },
+                "net_amount": {
+                  "type": "number"
+                },
+                "tax_amount": {
+                  "type": "number"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "customer_country": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "PortalSessionResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "customer_id": {
+                "type": "string"
+              },
+              "customer_email": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "CustomerDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "total_orders": {
+                "type": "integer"
+              },
+              "lifetime_revenue": {
+                "type": "number"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "CustomerUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "CustomerSubscriptionsResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "current_period_end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "cancel_at_period_end": {
+                  "type": "boolean"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "product": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomersListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "total_orders": {
+                  "type": "integer"
+                },
+                "lifetime_revenue": {
+                  "type": "number"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "CustomerCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email"
+        ]
+      },
+      "DiscountDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "code": {
+                "type": "string"
+              },
+              "discount_type": {
+                "type": "string"
+              },
+              "discount_amount": {
+                "type": "number"
+              },
+              "max_redemptions": {
+                "type": "integer"
+              },
+              "starts_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "status": {
+                "type": "string"
+              },
+              "product_ids": {
+                "type": "array",
+                "items": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      },
+      "DiscountUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "discount_type": {
+            "type": "string"
+          },
+          "discount_amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "max_redemptions": {
+            "type": "integer"
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "product_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "DiscountDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "DiscountsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DiscountDetailResponse"
+            }
+          }
+        }
+      },
+      "DiscountCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "code": {
+            "type": "string"
+          },
+          "discount_type": {
+            "type": "string",
+            "enum": [
+              "percentage",
+              "fixed"
+            ]
+          },
+          "discount_amount": {
+            "type": "number"
+          },
+          "status": {
+            "type": "string"
+          },
+          "max_redemptions": {
+            "type": "integer"
+          },
+          "product_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "starts_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        },
+        "required": [
+          "name",
+          "code",
+          "discount_type",
+          "discount_amount"
+        ]
+      },
+      "DisputesListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "EmailBroadcastRequest": {
+        "type": "object",
+        "properties": {
+          "subject": {
+            "type": "string"
+          },
+          "html": {
+            "type": "string"
+          },
+          "tag": {
+            "type": "string"
+          },
+          "target_all": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "subject",
+          "html"
+        ]
+      },
+      "EmailBroadcastResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          },
+          "errors": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "EventTrackRequest": {
+        "type": "object",
+        "properties": {
+          "eventName": {
+            "type": "string"
+          },
+          "eventData": {
+            "type": "object"
+          },
+          "url": {
+            "type": "string"
+          },
+          "referrer": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "eventName"
+        ]
+      },
+      "EventTrackResponse": {
+        "type": "object",
+        "properties": {
+          "success": {
+            "type": "boolean"
+          },
+          "message": {
+            "type": "string"
+          }
+        }
+      },
+      "FileDownloadResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "file_id": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "expires_in": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "FileDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "type": {
+                "type": "string"
+              },
+              "title": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "url": {
+                "type": "string"
+              },
+              "button_label": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "FileDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "FileListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "type": {
+                  "type": "string"
+                },
+                "title": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "url": {
+                  "type": "string"
+                },
+                "button_label": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyRevokeResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "key": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  }
+                }
+              },
+              "customer": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "email": {
+                    "type": "string"
+                  }
+                }
+              },
+              "order": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "amount": {
+                    "type": "number"
+                  },
+                  "created_at": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "activation_limit": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          }
+        }
+      },
+      "LicenseKeyActivateRequest": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_key"
+        ]
+      },
+      "LicenseKeyActivateResponse": {
+        "type": "object",
+        "properties": {
+          "activated": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeysListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/LicenseKeyDetail"
+            }
+          }
+        }
+      },
+      "LicenseKeyDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "product_id": {
+            "type": "string"
+          },
+          "order_id": {
+            "type": "string"
+          },
+          "customer_id": {
+            "type": "string"
+          },
+          "key": {
+            "type": "string"
+          },
+          "activation_limit": {
+            "type": "integer"
+          },
+          "activations": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "expires_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "LicenseKeyValidateRequest": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_key"
+        ]
+      },
+      "LicenseKeyValidateResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "customer_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "MeterDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "event_name": {
+                "type": "string"
+              },
+              "aggregation_type": {
+                "type": "string"
+              },
+              "unit": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "MeterUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          }
+        }
+      },
+      "MetersListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/MeterDetail"
+            }
+          }
+        }
+      },
+      "MeterDetail": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "event_name": {
+            "type": "string"
+          },
+          "aggregation_type": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string"
+          },
+          "store_id": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "string",
+            "format": "date-time"
+          },
+          "updated_at": {
+            "type": "string",
+            "format": "date-time"
+          }
+        }
+      },
+      "MeterCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "event_name": {
+            "type": "string"
+          },
+          "aggregation_type": {
+            "type": "string"
+          },
+          "unit": {
+            "type": "string",
+            "default": "unit"
+          }
+        },
+        "required": [
+          "name",
+          "event_name",
+          "aggregation_type"
+        ]
+      },
+      "MetricsResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "period": {
+                "type": "object",
+                "properties": {
+                  "start": {
+                    "type": "string",
+                    "format": "date-time"
+                  },
+                  "end": {
+                    "type": "string",
+                    "format": "date-time"
+                  }
+                }
+              },
+              "orders": {
+                "type": "object",
+                "properties": {
+                  "count": {
+                    "type": "integer"
+                  },
+                  "gross_revenue": {
+                    "type": "number"
+                  },
+                  "net_revenue": {
+                    "type": "number"
+                  }
+                }
+              },
+              "subscriptions": {
+                "type": "object",
+                "properties": {
+                  "active": {
+                    "type": "integer"
+                  },
+                  "mrr": {
+                    "type": "number"
+                  },
+                  "arr": {
+                    "type": "number"
+                  }
+                }
+              },
+              "customers": {
+                "type": "object",
+                "properties": {
+                  "new_in_period": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrganizationsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "email": {
+                  "type": "string"
+                },
+                "organization_name": {
+                  "type": "string"
+                },
+                "billing_email": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "OrganizationCreateRequest": {
+        "type": "object",
+        "properties": {
+          "email": {
+            "type": "string"
+          },
+          "organization_name": {
+            "type": "string"
+          },
+          "billing_email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "email",
+          "organization_name"
+        ]
+      },
+      "OrganizationDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "email": {
+                "type": "string"
+              },
+              "organization_name": {
+                "type": "string"
+              },
+              "billing_email": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "PayoutsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "additionalProperties": true
+            }
+          }
+        }
+      },
+      "ProductDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "preview_link": {
+                "type": "string"
+              },
+              "pricing_model": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "currency": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "subscription_interval": {
+                "type": "string"
+              },
+              "trial_days": {
+                "type": "integer"
+              },
+              "variants": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "description": {
+                      "type": "string"
+                    },
+                    "price": {
+                      "type": "integer"
+                    },
+                    "currency": {
+                      "type": "string"
+                    },
+                    "is_active": {
+                      "type": "boolean"
+                    },
+                    "subscription_interval": {
+                      "type": "string"
+                    },
+                    "trial_days": {
+                      "type": "integer"
+                    },
+                    "created_at": {
+                      "type": "string",
+                      "format": "date-time"
+                    }
+                  }
+                }
+              },
+              "deliverables": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "type": {
+                      "type": "string"
+                    },
+                    "title": {
+                      "type": "string"
+                    },
+                    "url": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "status": {
+            "type": "string"
+          },
+          "subscription_interval": {
+            "type": "string"
+          },
+          "trial_days": {
+            "type": "integer"
+          }
+        }
+      },
+      "ProductArchiveResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "archived": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "is_active": {
+                  "type": "boolean"
+                },
+                "subscription_interval": {
+                  "type": "string"
+                },
+                "trial_days": {
+                  "type": "integer"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "name",
+          "price"
+        ]
+      },
+      "ProductVariantDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "description": {
+                "type": "string"
+              },
+              "price": {
+                "type": "integer"
+              },
+              "is_active": {
+                "type": "boolean"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          }
+        }
+      },
+      "ProductVariantUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "price": {
+            "type": "integer"
+          },
+          "is_active": {
+            "type": "boolean"
+          }
+        }
+      },
+      "ProductVariantDeleteResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "deleted": {
+                "type": "boolean"
+              }
+            }
+          }
+        }
+      },
+      "ProductsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              },
+              "page": {
+                "type": "integer"
+              },
+              "limit": {
+                "type": "integer"
+              },
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "name": {
+                  "type": "string"
+                },
+                "description": {
+                  "type": "string"
+                },
+                "preview_link": {
+                  "type": "string"
+                },
+                "pricing_model": {
+                  "type": "string"
+                },
+                "price": {
+                  "type": "integer"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "subscription_interval": {
+                  "type": "string"
+                },
+                "trial_days": {
+                  "type": "integer"
+                },
+                "requires_license_key": {
+                  "type": "boolean"
+                },
+                "cart_recovery_enabled": {
+                  "type": "boolean"
+                },
+                "customer_portal_visibility": {
+                  "type": "string"
+                },
+                "variants": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "price": {
+                        "type": "integer"
+                      },
+                      "is_active": {
+                        "type": "boolean"
+                      }
+                    }
+                  }
+                },
+                "images": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "file_url": {
+                        "type": "string"
+                      },
+                      "position": {
+                        "type": "integer"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "ProductCreateRequest": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "pricing_model": {
+            "type": "string",
+            "enum": [
+              "one_time",
+              "subscription",
+              "pay_what_you_want",
+              "tiered"
+            ]
+          },
+          "price": {
+            "type": "integer"
+          },
+          "description": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string",
+            "default": "active"
+          },
+          "subscription_interval": {
+            "type": "string"
+          },
+          "trial_days": {
+            "type": "integer"
+          },
+          "preview_link": {
+            "type": "string"
+          },
+          "requires_license_key": {
+            "type": "boolean"
+          },
+          "license_key_activation_limit": {
+            "type": "integer"
+          },
+          "cart_recovery_enabled": {
+            "type": "boolean"
+          },
+          "customer_portal_visibility": {
+            "type": "string",
+            "default": "visible"
+          }
+        },
+        "required": [
+          "name",
+          "pricing_model",
+          "price"
+        ]
+      },
+      "RefundsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "has_more": {
+                "type": "boolean"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "SubscriptionInvoicesResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object"
+            }
+          }
+        }
+      },
+      "SubscriptionDetailResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "store_id": {
+                "type": "string"
+              },
+              "product_id": {
+                "type": "string"
+              },
+              "variant_id": {
+                "type": "string"
+              },
+              "status": {
+                "type": "string"
+              },
+              "current_period_end": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "cancel_at_period_end": {
+                "type": "boolean"
+              },
+              "metadata": {
+                "type": "object"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "updated_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "stripe_subscription_id": {
+                "type": "string"
+              },
+              "stripe_customer_id": {
+                "type": "string"
+              },
+              "product": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "pricing_model": {
+                    "type": "string"
+                  },
+                  "subscription_interval": {
+                    "type": "string"
+                  }
+                }
+              },
+              "variant": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "name": {
+                    "type": "string"
+                  },
+                  "price": {
+                    "type": "integer"
+                  },
+                  "subscription_interval": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "SubscriptionUpdateRequest": {
+        "type": "object",
+        "properties": {
+          "action": {
+            "type": "string",
+            "enum": [
+              "cancel",
+              "cancel_immediately",
+              "resume"
+            ]
+          }
+        },
+        "required": [
+          "action"
+        ]
+      },
+      "SubscriptionsListResponse": {
+        "type": "object",
+        "properties": {
+          "meta": {
+            "type": "object",
+            "properties": {
+              "total": {
+                "type": "integer"
+              }
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string"
+                },
+                "store_id": {
+                  "type": "string"
+                },
+                "product_id": {
+                  "type": "string"
+                },
+                "variant_id": {
+                  "type": "string"
+                },
+                "status": {
+                  "type": "string"
+                },
+                "current_period_end": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "cancel_at_period_end": {
+                  "type": "boolean"
+                },
+                "metadata": {
+                  "type": "object"
+                },
+                "created_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "updated_at": {
+                  "type": "string",
+                  "format": "date-time"
+                },
+                "stripe_customer_id": {
+                  "type": "string"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "Payees",
+      "description": "Manage headless payee accounts and payouts"
+    }
+  ]
+}

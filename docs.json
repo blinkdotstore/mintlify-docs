@@ -116,11 +116,19 @@
           "api-reference/introduction",
           "api-reference/test-mode",
           {
-            "group": "Blink API",
+            "group": "Core",
             "pages": [
               "api-reference/embedded-checkout"
             ],
-            "openapi": "api-reference/blink-api.json"
+            "openapi": "api-reference/core-api.json"
+          },
+          {
+            "group": "Financials",
+            "openapi": "api-reference/financials-api.json"
+          },
+          {
+            "group": "Growth & Marketing",
+            "openapi": "api-reference/growth-api.json"
           },
           {
             "group": "Webhooks & Events",
@@ -155,7 +163,9 @@
     ]
   },
   "openapi": [
-    "api-reference/blink-api.json",
+    "api-reference/core-api.json",
+    "api-reference/financials-api.json",
+    "api-reference/growth-api.json",
     "api-reference/webhooks-api.json"
   ],
   "appearance": {
