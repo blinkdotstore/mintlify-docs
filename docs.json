@@ -18,8 +18,8 @@
     "light": "/images/blink-icon-dark.svg"
   },
   "favicon": {
-    "light": "/images/blink-mail-product.png",
-    "dark": "/favicon.svg"
+    "light": "/images/fav-dark.svg",
+    "dark": "/images/fav-dark.svg"
   },
   "navigation": {
     "tabs": [
