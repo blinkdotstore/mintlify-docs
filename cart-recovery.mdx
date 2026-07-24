@@ -56,3 +56,18 @@ Add an incentive to increase conversions.
 By default, a discount is automatically included in the **second and third emails** to encourage customers to complete their purchase.
 
 You can adjust the percentage to whatever fits your pricing strategy.
+
+---
+
+## **Cart Recovery via API**
+
+If you are building custom checkout flows or want to manage your own marketing campaigns outside of Blink, you can fully control the cart recovery process using the Blink API.
+
+Here is what you can do programmatically:
+- **List Abandoned Carts (`GET /cart-recovery`)**: Retrieve all abandoned carts, optionally filtering by status (`open`, `recovered`, or `expired`) and `product_id`.
+- **Generate Recovery Links (`GET /cart-recovery/:id/link`)**: Generate a live checkout recovery URL without triggering an email from Blink. This is perfect for custom SMS campaigns (via Twilio) or advanced email flows (via Klaviyo).
+- **Trigger Native Emails (`POST /cart-recovery/trigger`)**: Manually fire Blink’s native recovery email sequence for a specific cart. The system automatically adjusts the subject line based on how many reminders have already been sent.
+- **Archive Carts (`DELETE /cart-recovery/:id`)**: Programmatically dismiss or archive carts from your dashboard if you've already handled them manually.
+- **Webhooks**: Sync your external CRM in real-time by listening to `abandoned_cart.created` and `abandoned_cart.recovered` events.
+
+For full technical details, visit the [API Reference](/api-reference/introduction).
