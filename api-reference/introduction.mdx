@@ -1,6 +1,6 @@
 ---
 title: "API Overview"
-description: "Base URLs, authentication, pagination, rate limits, and the difference between the core APIs."
+description: "Base URLs, authentication, pagination, rate limits, and an overview of our APIs."
 ---
 
 <Warning>
@@ -10,20 +10,20 @@ description: "Base URLs, authentication, pagination, rate limits, and the differ
 Welcome to the Blink API! Our suite of APIs provides everything you need to build, manage, and scale your storefront programmatically.
 
 <CardGroup cols={2}>
-  <Card title="Blink API" icon="server">
-    The main server-to-server API for merchants to manage checkouts, products, and store settings.
+  <Card title="Core API" icon="server">
+    The main server-to-server API for merchants to manage checkouts, products, deliverables, and store settings.
   </Card>
 
-  <Card title="Shopper API" icon="user">
-    Customer-token authenticated endpoints used to power customer-facing dashboards.
+  <Card title="Financials API" icon="dollar-sign">
+    Manage the money side of your business, including invoices, taxes, refunds, disputes, and payouts.
   </Card>
 
-  <Card title="Growth API" icon="trending-up">
-    Marketing, affiliates, abandoned carts, and upselling tools.
+  <Card title="Growth & Marketing API" icon="trending-up">
+    Powerful endpoints for cart recovery, discounts, affiliates, splits, and geo-pricing.
   </Card>
 
   <Card title="Webhooks & Events" icon="webhook">
-    Event tracking, webhook management, and store analytics.
+    Event tracking and webhook management to keep your external systems perfectly in sync.
   </Card>
 </CardGroup>
 
@@ -31,25 +31,21 @@ Welcome to the Blink API! Our suite of APIs provides everything you need to buil
 
 The Blink API is organized around REST. Our API has predictable resource-oriented URLs, accepts form-encoded request bodies, returns JSON-encoded responses, and uses standard HTTP response codes, authentication, and verbs.
 
-<CardGroup cols={2}>
+<CardGroup cols={1}>
   <Card title="Production Base URL" icon="globe">
     `https://api.blink.store/v1`
-  </Card>
-
-  <Card title="Sandbox Base URL" icon="flask">
-    `https://sandbox-api.blink.store/v1`
   </Card>
 </CardGroup>
 
 <Info>
-  **Note on Sandbox**: The sandbox environment is fully isolated—data, users, tokens, and organizations created there do not affect production. Create separate tokens in each environment.
+  **Test Mode**: Blink does not use a separate Sandbox URL. Instead, we offer a unified **Test Mode**. All API requests made using a test-mode secret key are completely isolated from your production data. Learn more in our [Test Mode](/api-reference/test-mode) guide.
 </Info>
 
 ## Authentication
 
-Blink uses different types of authentication tokens depending on the API you are accessing.
+Blink uses Merchant Secret Keys to authenticate your requests.
 
-### Merchant Secret Keys (Blink API, Growth API)
+### Merchant Secret Keys
 
 For server-to-server interactions, authenticate requests using your Store Secret Key. You can view and manage your API keys in the Blink Dashboard. **Do not share your secret API keys in publicly accessible areas such as GitHub, or client-side code.**
 
@@ -60,28 +56,9 @@ Authorization: Bearer blink_live_xxxxxxxxxxxxxxxxxxxxxxxxxxx
 x-store-id: str_xxxxxxxxxxxxxxxxxxxxxxxxxxx
 ```
 
-### Customer Tokens (Shopper API)
-
-For the Shopper API, you authenticate using a temporary Customer Token granted when a shopper logs into their customer portal. This token only grants access to data owned by that specific customer.
-
-```bash
-Authorization: Bearer cus_xxxxxxxxxxxxxxxxxxxxxxxxxxx
-```
-
 <Warning>
   All API requests must be made over HTTPS. Calls made over plain HTTP will fail. API requests without authentication will also fail.
 </Warning>
-
-## Blink API vs Shopper API
-
-It's important to use the correct API and token for your use-case.
-
-| Feature | Blink API | Shopper API |
-| :-- | :-- | :-- |
-| **Authentication** | Merchant Secret Key (`blink_live_...`) | Customer Token (`cus_...`) |
-| **Use Case** | Server-side logic, admin dashboards, syncing data. | Client-side customer portals, mobile apps for buyers. |
-| **Permissions** | Full read/write access to your entire store. | Read/write access strictly limited to a single customer. |
-| **Rate Limits** | 100 req / sec | 20 req / sec |
 
 ## Pagination
 
@@ -120,7 +97,6 @@ A paginated response will always wrap the results in a `data` array and include 
 
 To prevent abuse, Blink limits the number of API requests you can make in a given timeframe.
 
-- **Production**: 100 requests per second
-- **Sandbox**: 50 requests per second
+- **Rate Limit**: 100 requests per second
 
 If you exceed these limits, the API will return a `429 Too Many Requests` status code.
