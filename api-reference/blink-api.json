@@ -1471,78 +1471,7 @@
         }
       }
     },
-    "/emails/broadcast": {
-      "post": {
-        "tags": [
-          "Emails"
-        ],
-        "summary": "Broadcast email to customers",
-        "description": "Sends a targeted email to a segment of customers filtered by tag or all.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EmailBroadcastRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Email broadcast sent successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EmailBroadcastResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
-    "/events": {
-      "post": {
-        "tags": [
-          "Events"
-        ],
-        "summary": "Track a custom event",
-        "description": "Logs a custom event for a store using Umami analytics. Tracks user activities, marketing campaigns, or other events.",
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "$ref": "#/components/schemas/EventTrackRequest"
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Event tracked successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/EventTrackResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request"
-          },
-          "401": {
-            "description": "Unauthorized"
-          }
-        }
-      }
-    },
+
     "/license-keys/{id}/revoke": {
       "post": {
         "tags": [
