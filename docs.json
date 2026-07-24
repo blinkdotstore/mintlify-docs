@@ -14,8 +14,8 @@
     }
   },
   "logo": {
-    "dark": "/images/blink-icon-light.svg",
-    "light": "/images/blink-icon-dark.svg"
+    "dark": "/images/blink-icon-dark.svg",
+    "light": "/images/blink-icon-light.svg"
   },
   "favicon": {
     "light": "/images/fav-dark.svg",
