@@ -29,6 +29,7 @@
           "getting-started",
           "setup",
           "supported-countries",
+          "migrate",
           {
             "group": "Storefront",
             "icon": "store",
