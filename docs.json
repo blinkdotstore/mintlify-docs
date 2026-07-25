@@ -38,9 +38,17 @@
               "customization",
               "orders",
               "customers",
-              "discounts",
-              "bumps",
               "store-settings"
+            ]
+          },
+          {
+            "group": "Checkouts",
+            "icon": "shopping-cart",
+            "expanded": true,
+            "pages": [
+              "store-checkout",
+              "checkout-links",
+              "overlay-checkout"
             ]
           },
           {
@@ -56,47 +64,43 @@
             "expanded": true
           },
           {
-            "group": "Checkouts",
+            "group": "Growth tools",
+            "icon": "rocket",
             "pages": [
-              "store-checkout",
-              "custom-checkouts",
-              "overlay-checkout"
-            ],
-            "icon": "shopping-cart",
-            "expanded": true
-          },
-          {
-            "group": "Email",
-            "icon": "envelope-open",
-            "expanded": true,
-            "pages": [
-              "cart-recovery",
-              "broadcasts",
-              "email-plans",
-              "email-settings"
+              {
+                "group": "Affiliates",
+                "expanded": true,
+                "pages": [
+                  "affiliate-setup",
+                  "affiliate-manage",
+                  "affiliate-payouts"
+                ]
+              },
+              {
+                "group": "Splits",
+                "pages": [
+                  "splits-overview",
+                  "splits-create-a-split",
+                  "splits-received",
+                  "splits-invites"
+                ]
+              },
+              {
+                "group": "Email",
+                "expanded": true,
+                "pages": [
+                  "cart-recovery",
+                  "broadcasts",
+                  "email-plans",
+                  "email-settings"
+                ]
+              },
+              "bumps",
+              "analytics",
+              "geo-pricing",
+              "discounts"
             ]
           },
-          {
-            "group": "Affiliates",
-            "icon": "users",
-            "expanded": true,
-            "pages": [
-              "affiliate-setup",
-              "affiliate-manage",
-              "affiliate-payouts"
-            ]
-          },
-          {
-            "group": "Splits",
-            "pages": [
-              "splits-overview",
-              "splits-create-a-split",
-              "splits-received",
-              "splits-invites"
-            ],
-            "icon": "chart-pie-alt"
-          },
-          "analytics",
           {
             "group": "Financials",
             "pages": [
