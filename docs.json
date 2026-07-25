@@ -69,7 +69,6 @@
             "pages": [
               {
                 "group": "Affiliates",
-                "expanded": true,
                 "pages": [
                   "affiliate-setup",
                   "affiliate-manage",
@@ -87,7 +86,6 @@
               },
               {
                 "group": "Email",
-                "expanded": true,
                 "pages": [
                   "cart-recovery",
                   "broadcasts",
