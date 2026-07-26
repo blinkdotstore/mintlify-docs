@@ -86,14 +86,14 @@
                 ]
               },
               {
-                "group": "Email",
+                "group": "Broadcasts",
                 "pages": [
-                  "cart-recovery",
                   "broadcasts",
                   "email-plans",
                   "email-settings"
                 ]
               },
+              "cart-recovery",
               "bumps",
               "analytics",
               "geo-pricing",
