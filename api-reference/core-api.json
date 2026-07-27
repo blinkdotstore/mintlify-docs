@@ -1636,8 +1636,8 @@
         "tags": [
           "Subscriptions"
         ],
-        "summary": "Update subscription status",
-        "description": "Updates the status of a subscription, allowing actions such as cancelation, immediate cancelation, or resumption.\n\n**Usage:** Useful for managing the lifecycle of subscriptions, including cancelation and resumption.\n\n**Path",
+        "summary": "Update or swap a subscription",
+        "description": "Updates the status of a subscription, allowing actions such as cancelation, immediate cancelation, resumption, or executing a **swap** (upgrade/downgrade). To execute a swap, set `action` to `swap` and provide `variant_id` or `product_id` in the body.",
         "parameters": [
           {
             "name": "id",
@@ -1759,7 +1759,57 @@
           "200": {
             "description": "OK"
           }
-        }
+        },
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "required": [
+                  "product_id",
+                  "customer_id"
+                ],
+                "properties": {
+                  "product_id": {
+                    "type": "string",
+                    "description": "ID of the product"
+                  },
+                  "customer_id": {
+                    "type": "string",
+                    "description": "ID of the customer"
+                  },
+                  "variant_id": {
+                    "type": "string",
+                    "description": "ID of the variant (optional)"
+                  },
+                  "status": {
+                    "type": "string",
+                    "default": "active",
+                    "enum": [
+                      "active",
+                      "trialing",
+                      "canceled",
+                      "past_due",
+                      "paused"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "description": "Manually create a subscription for a customer. This bypasses checkout and directly assigns the subscription."
       }
     },
     "/license-keys/import": {
