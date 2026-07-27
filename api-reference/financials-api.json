@@ -507,6 +507,42 @@
           }
         }
       }
+    },
+    "/subscription-invoices/{id}": {
+      "patch": {
+        "tags": [
+          "Subscription Invoices"
+        ],
+        "summary": "Update a subscription invoice",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/usage-records": {
+      "get": {
+        "tags": [
+          "Meters"
+        ],
+        "summary": "List usage records",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
     }
   },
   "components": {
@@ -2612,7 +2648,12 @@
                 "type": "string"
               },
               "pricing_model": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "one_time",
+                  "subscription",
+                  "pay_what_you_want"
+                ]
               },
               "price": {
                 "type": "integer"
@@ -2628,7 +2669,13 @@
                 "format": "date-time"
               },
               "subscription_interval": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "year"
+                ]
               },
               "trial_days": {
                 "type": "integer"
@@ -2657,7 +2704,13 @@
                       "type": "boolean"
                     },
                     "subscription_interval": {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "day",
+                        "week",
+                        "month",
+                        "year"
+                      ]
                     },
                     "trial_days": {
                       "type": "integer"
@@ -2709,7 +2762,13 @@
             "type": "string"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -2764,7 +2823,13 @@
                   "type": "boolean"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -2902,7 +2967,12 @@
                   "type": "string"
                 },
                 "pricing_model": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "one_time",
+                    "subscription",
+                    "pay_what_you_want"
+                  ]
                 },
                 "price": {
                   "type": "integer"
@@ -2915,7 +2985,13 @@
                   "format": "date-time"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -2997,7 +3073,13 @@
             "default": "active"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -3118,10 +3200,21 @@
                     "type": "string"
                   },
                   "pricing_model": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "one_time",
+                      "subscription",
+                      "pay_what_you_want"
+                    ]
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               },
@@ -3138,7 +3231,13 @@
                     "type": "integer"
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               }
@@ -3154,8 +3253,17 @@
             "enum": [
               "cancel",
               "cancel_immediately",
-              "resume"
+              "resume",
+              "swap"
             ]
+          },
+          "variant_id": {
+            "type": "string",
+            "description": "Required if action is swap"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Required if action is swap"
           }
         },
         "required": [

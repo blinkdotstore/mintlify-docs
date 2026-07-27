@@ -91,8 +91,7 @@
         "tags": [
           "Cart Recovery"
         ],
-        "summary": "Delete an abandoned cart",
-        "description": "Deletes a specific abandoned cart by its ID.",
+        "summary": "Delete a cart recovery campaign",
         "parameters": [
           {
             "name": "id",
@@ -105,13 +104,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Abandoned cart deleted successfully"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
+            "description": "OK"
           }
         }
       }
@@ -121,8 +114,7 @@
         "tags": [
           "Cart Recovery"
         ],
-        "summary": "Generate a recovery link",
-        "description": "Generates a live checkout recovery URL for the abandoned cart without triggering an email. This is useful for injecting the link into custom marketing flows.",
+        "summary": "Get recovery link",
         "parameters": [
           {
             "name": "id",
@@ -135,33 +127,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Recovery link generated successfully",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "data": {
-                      "type": "object",
-                      "properties": {
-                        "url": {
-                          "type": "string"
-                        }
-                      }
-                    }
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Cart is already recovered"
-          },
-          "401": {
-            "description": "Unauthorized"
-          },
-          "404": {
-            "description": "Not Found"
+            "description": "OK"
           }
         }
       }
@@ -1577,8 +1543,7 @@
         "tags": [
           "Bumps"
         ],
-        "summary": "Retrieve a bump",
-        "description": "Fetches detailed information for a specific bump, including deliverables.",
+        "summary": "Retrieve a specific bump",
         "parameters": [
           {
             "name": "id",
@@ -1591,7 +1556,183 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/programs": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "List affiliate programs",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/members": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "List affiliate members",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/members/{membership_id}/finances": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Get affiliate finances",
+        "parameters": [
+          {
+            "name": "membership_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/members/{membership_id}/links": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "List affiliate links",
+        "parameters": [
+          {
+            "name": "membership_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Create affiliate link",
+        "parameters": [
+          {
+            "name": "membership_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/members/{membership_id}/metrics": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "Get affiliate metrics",
+        "parameters": [
+          {
+            "name": "membership_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/affiliates/members/{membership_id}/orders": {
+      "get": {
+        "tags": [
+          "Affiliates"
+        ],
+        "summary": "List affiliate orders",
+        "parameters": [
+          {
+            "name": "membership_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/audience/broadcasts": {
+      "get": {
+        "tags": [
+          "Audience"
+        ],
+        "summary": "List all broadcasts",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    },
+    "/audience/tags": {
+      "get": {
+        "tags": [
+          "Audience"
+        ],
+        "summary": "List all tags",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "Audience"
+        ],
+        "summary": "Delete a tag",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -3700,7 +3841,12 @@
                 "type": "string"
               },
               "pricing_model": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "one_time",
+                  "subscription",
+                  "pay_what_you_want"
+                ]
               },
               "price": {
                 "type": "integer"
@@ -3716,7 +3862,13 @@
                 "format": "date-time"
               },
               "subscription_interval": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "year"
+                ]
               },
               "trial_days": {
                 "type": "integer"
@@ -3745,7 +3897,13 @@
                       "type": "boolean"
                     },
                     "subscription_interval": {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "day",
+                        "week",
+                        "month",
+                        "year"
+                      ]
                     },
                     "trial_days": {
                       "type": "integer"
@@ -3797,7 +3955,13 @@
             "type": "string"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -3852,7 +4016,13 @@
                   "type": "boolean"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -3990,7 +4160,12 @@
                   "type": "string"
                 },
                 "pricing_model": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "one_time",
+                    "subscription",
+                    "pay_what_you_want"
+                  ]
                 },
                 "price": {
                   "type": "integer"
@@ -4003,7 +4178,13 @@
                   "format": "date-time"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -4085,7 +4266,13 @@
             "default": "active"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -4206,10 +4393,21 @@
                     "type": "string"
                   },
                   "pricing_model": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "one_time",
+                      "subscription",
+                      "pay_what_you_want"
+                    ]
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               },
@@ -4226,7 +4424,13 @@
                     "type": "integer"
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               }
@@ -4242,8 +4446,17 @@
             "enum": [
               "cancel",
               "cancel_immediately",
-              "resume"
+              "resume",
+              "swap"
             ]
+          },
+          "variant_id": {
+            "type": "string",
+            "description": "Required if action is swap"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Required if action is swap"
           }
         },
         "required": [

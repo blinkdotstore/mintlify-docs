@@ -807,6 +807,17 @@
             "description": "Internal Server Error"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "License Keys"
+        ],
+        "summary": "Create license key manually",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/license-keys/validate": {
@@ -1738,6 +1749,17 @@
             "description": "Unauthorized"
           }
         }
+      },
+      "post": {
+        "tags": [
+          "Subscriptions"
+        ],
+        "summary": "Create a subscription manually",
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/license-keys/import": {
@@ -2462,6 +2484,27 @@
             "description": "Unauthorized"
           }
         }
+      },
+      "delete": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Delete an organization",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
       }
     },
     "/organizations/{id}/members": {
@@ -2489,6 +2532,27 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Organizations"
+        ],
+        "summary": "Add a member to an organization",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2560,12 +2624,12 @@
       }
     },
     "/subscriptions/{id}/preview-swap": {
-      "post": {
+      "get": {
         "tags": [
           "Subscriptions"
         ],
-        "summary": "Preview Subscription Swap",
-        "description": "Calculates the exact proration amounts before upgrading or downgrading a subscription.\n\n**Usage:** E-Learning apps letting users preview exactly how much they will be charged (or credited) today if they upgrade from the 'Basic' tier to 'Pro Max'.",
+        "summary": "Preview a subscription swap",
+        "description": "Preview the prorated invoice amounts for a potential subscription swap.",
         "parameters": [
           {
             "name": "id",
@@ -2574,22 +2638,32 @@
             "schema": {
               "type": "string"
             }
-          }
-        ],
-        "requestBody": {
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "new_variant_id": {
-                    "type": "string"
-                  }
-                }
-              }
+          },
+          {
+            "name": "variant_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "product_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "x-store-id",
+            "in": "header",
+            "required": true,
+            "schema": {
+              "type": "string"
             }
           }
-        },
+        ],
         "responses": {
           "200": {
             "description": "Successful response"
@@ -2647,6 +2721,35 @@
           },
           "401": {
             "description": "Unauthorized"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "Deliverables"
+        ],
+        "summary": "Upload a deliverable",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary"
+                  },
+                  "product_id": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -2853,6 +2956,19 @@
         "responses": {
           "200": {
             "description": "List of deliverables unlocked by this order"
+          }
+        }
+      }
+    },
+    "/events": {
+      "get": {
+        "tags": [
+          "Core"
+        ],
+        "summary": "List events",
+        "responses": {
+          "200": {
+            "description": "OK"
           }
         }
       }
@@ -5001,7 +5117,12 @@
                 "type": "string"
               },
               "pricing_model": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "one_time",
+                  "subscription",
+                  "pay_what_you_want"
+                ]
               },
               "price": {
                 "type": "integer"
@@ -5017,7 +5138,13 @@
                 "format": "date-time"
               },
               "subscription_interval": {
-                "type": "string"
+                "type": "string",
+                "enum": [
+                  "day",
+                  "week",
+                  "month",
+                  "year"
+                ]
               },
               "trial_days": {
                 "type": "integer"
@@ -5046,7 +5173,13 @@
                       "type": "boolean"
                     },
                     "subscription_interval": {
-                      "type": "string"
+                      "type": "string",
+                      "enum": [
+                        "day",
+                        "week",
+                        "month",
+                        "year"
+                      ]
                     },
                     "trial_days": {
                       "type": "integer"
@@ -5098,7 +5231,13 @@
             "type": "string"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -5153,7 +5292,13 @@
                   "type": "boolean"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -5291,7 +5436,12 @@
                   "type": "string"
                 },
                 "pricing_model": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "one_time",
+                    "subscription",
+                    "pay_what_you_want"
+                  ]
                 },
                 "price": {
                   "type": "integer"
@@ -5304,7 +5454,13 @@
                   "format": "date-time"
                 },
                 "subscription_interval": {
-                  "type": "string"
+                  "type": "string",
+                  "enum": [
+                    "day",
+                    "week",
+                    "month",
+                    "year"
+                  ]
                 },
                 "trial_days": {
                   "type": "integer"
@@ -5386,7 +5542,13 @@
             "default": "active"
           },
           "subscription_interval": {
-            "type": "string"
+            "type": "string",
+            "enum": [
+              "day",
+              "week",
+              "month",
+              "year"
+            ]
           },
           "trial_days": {
             "type": "integer"
@@ -5507,10 +5669,21 @@
                     "type": "string"
                   },
                   "pricing_model": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "one_time",
+                      "subscription",
+                      "pay_what_you_want"
+                    ]
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               },
@@ -5527,7 +5700,13 @@
                     "type": "integer"
                   },
                   "subscription_interval": {
-                    "type": "string"
+                    "type": "string",
+                    "enum": [
+                      "day",
+                      "week",
+                      "month",
+                      "year"
+                    ]
                   }
                 }
               }
@@ -5543,8 +5722,17 @@
             "enum": [
               "cancel",
               "cancel_immediately",
-              "resume"
+              "resume",
+              "swap"
             ]
+          },
+          "variant_id": {
+            "type": "string",
+            "description": "Required if action is swap"
+          },
+          "product_id": {
+            "type": "string",
+            "description": "Required if action is swap"
           }
         },
         "required": [
