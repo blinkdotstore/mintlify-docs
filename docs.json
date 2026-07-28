@@ -127,48 +127,129 @@
             "pages": [
               {
                 "group": "Products",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/products/archive-a-product",
+                  "api-reference/products/create-a-new-product-variant",
+                  "api-reference/products/create-a-new-product",
+                  "api-reference/products/delete-a-product-variant",
+                  "api-reference/products/list-all-products",
+                  "api-reference/products/list-product-variants",
+                  "api-reference/products/retrieve-product-details",
+                  "api-reference/products/retrieve-product-variant-details",
+                  "api-reference/products/update-product-details",
+                  "api-reference/products/update-product-variant-details"
+                ]
               },
               {
                 "group": "Checkouts",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/checkouts/create-a-new-checkout-session",
+                  "api-reference/checkouts/create-checkout-link",
+                  "api-reference/checkouts/delete-checkout-link",
+                  "api-reference/checkouts/list-checkout-links",
+                  "api-reference/checkouts/list-checkout-sessions",
+                  "api-reference/checkouts/retrieve-checkout-link",
+                  "api-reference/checkouts/retrieve-checkout-session-details",
+                  "api-reference/checkouts/update-checkout-link"
+                ]
               },
               "api-reference/embedded-checkout",
               {
                 "group": "Orders",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/orders/issue-a-refund",
+                  "api-reference/orders/list-all-deliverables-for-an-order",
+                  "api-reference/orders/list-all-orders",
+                  "api-reference/orders/resend-automatic-fulfillment-receipt",
+                  "api-reference/orders/retrieve-an-order"
+                ]
               },
               {
                 "group": "Customers",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/customers/create-a-customer-portal-session",
+                  "api-reference/customers/create-a-customer",
+                  "api-reference/customers/list-customer-entitlements",
+                  "api-reference/customers/list-customer-orders",
+                  "api-reference/customers/list-customer-subscriptions",
+                  "api-reference/customers/list-customers",
+                  "api-reference/customers/retrieve-customer-details",
+                  "api-reference/customers/retrieve-customer-meter-balances",
+                  "api-reference/customers/update-customer-details"
+                ]
               },
               {
                 "group": "Subscriptions",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/subscriptions/create-a-subscription-manually",
+                  "api-reference/subscriptions/list-subscriptions",
+                  "api-reference/subscriptions/preview-a-subscription-swap",
+                  "api-reference/subscriptions/retrieve-subscription-details",
+                  "api-reference/subscriptions/retrieve-subscription-invoice",
+                  "api-reference/subscriptions/update-or-swap-a-subscription"
+                ]
               },
               {
                 "group": "Customer Portal",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/customer-portal/create-blink-billing-portal-session",
+                  "api-reference/customer-portal/list-customer-orders",
+                  "api-reference/customer-portal/list-customer-subscriptions",
+                  "api-reference/customer-portal/list-deliverables-customer-portal"
+                ]
               },
               {
                 "group": "Meters",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/meters/create-a-new-meter",
+                  "api-reference/meters/list-all-meters",
+                  "api-reference/meters/list-usage-records",
+                  "api-reference/meters/retrieve-customer-balance",
+                  "api-reference/meters/retrieve-meter-details",
+                  "api-reference/meters/update-meter-details"
+                ]
               },
               {
                 "group": "Deliverables",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/deliverables/delete-deliverable",
+                  "api-reference/deliverables/generate-download-url",
+                  "api-reference/deliverables/get-deliverable",
+                  "api-reference/deliverables/list-deliverables",
+                  "api-reference/deliverables/upload-a-deliverable"
+                ]
               },
               {
                 "group": "License Keys",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/license-keys/activate-a-license-key",
+                  "api-reference/license-keys/bulk-import-license-keys",
+                  "api-reference/license-keys/create-license-key-manually",
+                  "api-reference/license-keys/list-license-keys",
+                  "api-reference/license-keys/retrieve-license-key-details",
+                  "api-reference/license-keys/revoke-a-license-key",
+                  "api-reference/license-keys/update-license-key-details",
+                  "api-reference/license-keys/validate-a-license-key"
+                ]
               },
               {
                 "group": "Organizations",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/organizations/add-a-member-to-an-organization",
+                  "api-reference/organizations/create-a-new-organization",
+                  "api-reference/organizations/delete-an-organization",
+                  "api-reference/organizations/list-all-organizations",
+                  "api-reference/organizations/list-organization-members",
+                  "api-reference/organizations/remove-organization-member",
+                  "api-reference/organizations/retrieve-organization",
+                  "api-reference/organizations/update-organization"
+                ]
               },
               {
                 "group": "Metrics",
-                "openapi": "api-reference/core-api.json"
+                "pages": [
+                  "api-reference/metrics/retrieve-metrics-for-revenue-orders-and-subscriptions"
+                ]
               }
             ]
           },
@@ -177,31 +258,51 @@
             "pages": [
               {
                 "group": "Invoices",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/invoices/download-invoice-pdf",
+                  "api-reference/invoices/list-all-invoices",
+                  "api-reference/invoices/list-subscription-invoices",
+                  "api-reference/invoices/retrieve-an-invoice"
+                ]
               },
               {
                 "group": "Subscription Invoices",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/subscription-invoices/update-a-subscription-invoice"
+                ]
               },
               {
                 "group": "Payouts",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/payouts/list-blink-payouts",
+                  "api-reference/payouts/retrieve-a-payout"
+                ]
               },
               {
                 "group": "Refunds",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/refunds/list-refunds"
+                ]
               },
               {
                 "group": "Disputes",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/disputes/list-blink-disputes"
+                ]
               },
               {
                 "group": "Taxes",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/taxes/calculate-taxes-dynamically",
+                  "api-reference/taxes/validate-vat-number"
+                ]
               },
               {
                 "group": "Payees",
-                "openapi": "api-reference/financials-api.json"
+                "pages": [
+                  "api-reference/payees/initialize-payee-profile",
+                  "api-reference/payees/retrieve-payee-status"
+                ]
               }
             ]
           },
@@ -210,31 +311,84 @@
             "pages": [
               {
                 "group": "Discounts",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/discounts/create-a-new-discount",
+                  "api-reference/discounts/delete-a-discount",
+                  "api-reference/discounts/list-discounts",
+                  "api-reference/discounts/retrieve-discount-details",
+                  "api-reference/discounts/update-discount-details"
+                ]
               },
               {
                 "group": "Bumps",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/bumps/create-a-new-bump",
+                  "api-reference/bumps/delete-bump",
+                  "api-reference/bumps/list-store-bumps",
+                  "api-reference/bumps/retrieve-a-specific-bump",
+                  "api-reference/bumps/update-bump"
+                ]
               },
               {
                 "group": "Cart Recovery",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/cart-recovery/delete-a-cart-recovery-campaign",
+                  "api-reference/cart-recovery/get-recovery-link",
+                  "api-reference/cart-recovery/list-all-abandoned-carts",
+                  "api-reference/cart-recovery/manually-trigger-recovery-email",
+                  "api-reference/cart-recovery/retrieve-abandoned-cart-details",
+                  "api-reference/cart-recovery/trigger-a-recovery-email"
+                ]
               },
               {
                 "group": "Affiliates",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/affiliates/create-affiliate-link",
+                  "api-reference/affiliates/generate-custom-affiliate-link",
+                  "api-reference/affiliates/generate-single-sign-on-sso-url",
+                  "api-reference/affiliates/get-affiliate-conversions",
+                  "api-reference/affiliates/get-affiliate-finances",
+                  "api-reference/affiliates/get-affiliate-links",
+                  "api-reference/affiliates/get-affiliate-metrics",
+                  "api-reference/affiliates/get-affiliate-program-settings",
+                  "api-reference/affiliates/initialize-payout-setup",
+                  "api-reference/affiliates/invite-an-affiliate",
+                  "api-reference/affiliates/list-affiliate-links",
+                  "api-reference/affiliates/list-affiliate-members",
+                  "api-reference/affiliates/list-affiliate-orders",
+                  "api-reference/affiliates/list-affiliate-programs",
+                  "api-reference/affiliates/list-affiliates",
+                  "api-reference/affiliates/register-a-new-affiliate",
+                  "api-reference/affiliates/retrieve-affiliate-details",
+                  "api-reference/affiliates/retrieve-payout-balances",
+                  "api-reference/affiliates/update-affiliate-details",
+                  "api-reference/affiliates/update-affiliate-membership-status"
+                ]
               },
               {
                 "group": "Splits",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/splits/create-a-split",
+                  "api-reference/splits/delete-a-split",
+                  "api-reference/splits/list-splits",
+                  "api-reference/splits/retrieve-a-split",
+                  "api-reference/splits/update-a-split"
+                ]
               },
               {
                 "group": "Geo Pricing",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/geo-pricing/create-geo-pricing-rule",
+                  "api-reference/geo-pricing/list-geo-pricing-rules"
+                ]
               },
               {
                 "group": "Audience",
-                "openapi": "api-reference/growth-api.json"
+                "pages": [
+                  "api-reference/audience/delete-a-tag",
+                  "api-reference/audience/list-all-broadcasts",
+                  "api-reference/audience/list-all-tags"
+                ]
               }
             ]
           },
@@ -245,7 +399,10 @@
               "api-reference/webhooks/webhook-signatures",
               {
                 "group": "Webhooks",
-                "openapi": "api-reference/webhooks-api.json"
+                "pages": [
+                  "api-reference/webhooks/event-delivery-log",
+                  "api-reference/webhooks/track-an-event"
+                ]
               }
             ]
           }
