@@ -16,6 +16,11 @@ When creating your product (via the dashboard or the API), ensure you set:
 - **Subscription Interval**: `month` (or your preferred cycle)
 - **Metered Pricing**: Enable metered pricing (`has_metered: true` in the API) and define your `metered_prices` tiers. This explicitly sets the overage rate that Stripe will use when the user exhausts their base allowance.
 
+<Note>
+**Sub-cent Pricing (e.g., $0.005 per token)**
+Because the API accepts prices in integer cents (`unit_amount`), you cannot directly specify $0.005 (which is half a cent). Instead, you must package your credits into blocks. For example, to charge $0.005 per credit, price it as **$5.00 per 1,000 credits** by setting `unit_amount: 500` and configuring a `transform_quantity` block to divide usage by 1,000.
+</Note>
+
 ## 2. Issue the Base Allowance (Metered Credits Deliverable)
 
 Now that you have a subscription product that can bill for overages, you need to grant the customer their base allowance (e.g., 10,000 AI tokens) every billing cycle.

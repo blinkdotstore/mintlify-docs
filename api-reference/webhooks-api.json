@@ -78,53 +78,6 @@
           }
         }
       }
-    },
-    "/metrics": {
-      "get": {
-        "summary": "Retrieve store metrics",
-        "description": "Fetch broad revenue, order, and subscription statistics over a specified date range, given by `start_date` and `end_date`. This provides insights into sales performance and trends, supporting strategic decision-making.",
-        "tags": [
-          "Webhooks"
-        ],
-        "parameters": [
-          {
-            "name": "start_date",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          },
-          {
-            "name": "end_date",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string",
-              "format": "date"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Metrics successfully retrieved.",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/MetricsResponse"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad request due to invalid date format."
-          },
-          "401": {
-            "description": "Unauthorized access without a valid store ID."
-          }
-        }
-      }
     }
   },
   "components": {
