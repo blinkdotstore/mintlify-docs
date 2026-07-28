@@ -2772,6 +2772,27 @@
           },
           "trial_days": {
             "type": "integer"
+          },
+          "has_metered": {
+            "type": "boolean",
+            "description": "Enable metered billing for overages"
+          },
+          "metered_prices": {
+            "type": "array",
+            "description": "Configure your overage pricing tiers here. If a user exceeds their deliverable grant, they will be billed at these rates.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "up_to": {
+                  "type": "integer",
+                  "description": "The upper threshold for this tier (or null for infinite)"
+                },
+                "unit_amount": {
+                  "type": "integer",
+                  "description": "The price per unit in cents"
+                }
+              }
+            }
           }
         }
       },
@@ -3099,6 +3120,27 @@
           "customer_portal_visibility": {
             "type": "string",
             "default": "visible"
+          },
+          "has_metered": {
+            "type": "boolean",
+            "description": "Enable metered billing for overages"
+          },
+          "metered_prices": {
+            "type": "array",
+            "description": "Configure your overage pricing tiers here. If a user exceeds their deliverable grant, they will be billed at these rates.",
+            "items": {
+              "type": "object",
+              "properties": {
+                "up_to": {
+                  "type": "integer",
+                  "description": "The upper threshold for this tier (or null for infinite)"
+                },
+                "unit_amount": {
+                  "type": "integer",
+                  "description": "The price per unit in cents"
+                }
+              }
+            }
           }
         },
         "required": [
