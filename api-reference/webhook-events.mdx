@@ -15,11 +15,18 @@ All events share a standard wrapper structure. The `data` property contains the 
   "created_at": "2026-07-28T09:00:00.000Z",
   "data": {
     "id": "ord_12345",
-    "product_id": "prod_abc",
-    "customer_id": "cus_xyz",
     "amount": 2000,
     "status": "paid",
     "is_test": false,
+    "customer": {
+      "id": "cus_xyz",
+      "name": "Jane Doe",
+      "email": "jane@example.com"
+    },
+    "product": {
+      "id": "prod_abc",
+      "name": "Premium Plan"
+    },
     "entitlements": {
       "pro_tier": "true"
     }
@@ -89,7 +96,6 @@ All events share a standard wrapper structure. The `data` property contains the 
 | `affiliate.approved` | Fired when an affiliate application is approved. |
 | `affiliate.conversion` | Fired when an affiliate records a conversion. |
 | `affiliate.commission_earned` | Fired when an affiliate earns commission on a successful payout. |
-| `affiliate.referral.created` | Fired when a checkout session completes and an affiliate commission is attributed. |
 | `affiliate.payout.processed` | Fired when an affiliate's balance is transferred via Stripe. |
 
 ## Abandoned Carts
