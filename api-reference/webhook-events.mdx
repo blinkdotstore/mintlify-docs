@@ -5,6 +5,29 @@ description: "A complete reference of all webhook events supported by Blink."
 
 When you register a webhook endpoint, you can subscribe to specific events. Below is the comprehensive list of all events you can listen for across the Blink platform.
 
+## Event Payload Structure
+
+All events share a standard wrapper structure. The `data` property contains the specific object related to the event.
+
+```json
+{
+  "event": "order.paid",
+  "created_at": "2026-07-28T09:00:00.000Z",
+  "data": {
+    "id": "ord_12345",
+    "product_id": "prod_abc",
+    "customer_id": "cus_xyz",
+    "amount": 2000,
+    "status": "paid",
+    "is_test": false,
+    "entitlements": {
+      "pro_tier": "true"
+    }
+  }
+}
+```
+
+
 ## Orders
 | Event Name | Description |
 |---|---|

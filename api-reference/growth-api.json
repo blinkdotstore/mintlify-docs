@@ -406,21 +406,47 @@
         "summary": "Generate custom affiliate link",
         "description": "Generates a custom tracking link for an affiliate membership using a specific code.\n\n**Usage:** Allows affiliates to create personalized links that can track their referral traffic and conversions.",
         "requestBody": {
+          "required": true,
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/AffiliateLinkRequest"
+                "type": "object",
+                "required": [
+                  "membership_id",
+                  "code"
+                ],
+                "properties": {
+                  "membership_id": {
+                    "type": "string"
+                  },
+                  "code": {
+                    "type": "string"
+                  }
+                }
               }
             }
           }
         },
         "responses": {
           "201": {
-            "description": "Tracking link created successfully",
+            "description": "Created",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AffiliateLinkResponse"
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "code": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
                 }
               }
             }

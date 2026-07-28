@@ -1,0 +1,51 @@
+---
+title: "Seat-Based Billing"
+description: "A guide on how to build team and seat-based subscriptions with Blink."
+---
+
+Blink provides native primitives for building team plans and seat-based B2B SaaS. This guide explains how the `seat_quantity` attribute interacts with organizations, subscriptions, and webhooks.
+
+## The Core Concept
+
+In a seat-based model, you charge your customer a fixed price *per seat* (e.g., $15/seat/month). In Blink, this is handled dynamically at checkout and throughout the subscription lifecycle using the `seat_quantity` field.
+
+### 1. Creating the Product
+To support seat-based pricing, create a standard subscription product (e.g., a "Team Plan" for $15/month). You do not need to configure anything special on the product itself; the magic happens when the checkout is generated.
+
+### 2. Initiating Checkout
+When a team owner signs up, you generate a checkout session via the API (`POST /v1/checkouts`) and explicitly pass the starting `seat_quantity`:
+
+```json
+{
+  "product_id": "prod_123",
+  "customer_email": "founder@startup.com",
+  "seat_quantity": 5
+}
+```
+
+Blink will automatically multiply the product price by the `seat_quantity`. In this example, the customer will be billed $75/month.
+
+## Managing Seats (Proration)
+
+When a customer adds or removes team members in your app, you need to sync the new seat count with their active subscription so Stripe can handle the billing and proration.
+
+Call `PATCH /v1/subscriptions/{id}` with the new `seat_quantity`:
+
+```json
+{
+  "seat_quantity": 6,
+  "action": "swap" 
+}
+```
+
+**Proration:** Because `action: swap` is used, Stripe will automatically calculate the prorated amount for the new seat for the remainder of the billing cycle and invoice the customer immediately or on the next cycle, depending on your Stripe settings.
+
+## Organizations & Fulfillment
+
+Blink has an internal `Organizations` feature that you can use to group customers together. 
+
+While Blink handles the *billing* math (via `seat_quantity` on the subscription), your app backend is responsible for the *access control* (e.g., inviting users to the organization and enforcing the seat limit).
+
+1. **Listen for Webhooks:** Listen for the `subscription.updated` webhook. When the `seat_quantity` changes, update the maximum allowed users for that team in your database.
+2. **Add Members:** Use the `POST /v1/organizations/{id}/members` endpoint to programmatically invite users to the team.
+3. **Seat Events:** If you are using Blink's built-in organization invites, Blink will fire `customer.seat_added` and `customer.seat_removed` webhooks when members accept invites or are removed. You can use these events to trigger provisioning logic in your app.

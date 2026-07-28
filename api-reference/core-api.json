@@ -2037,7 +2037,7 @@
           "Customer Portal"
         ],
         "summary": "Create Blink Billing Portal Session",
-        "description": "Generates a secure, temporary URL to the Blink Customer Billing Portal.\n\n**Usage:** SaaS companies allowing their users to update credit cards or cancel subscriptions directly from the company's own custom settings page.",
+        "description": "Creates a Stripe billing portal session. Note: This endpoint does not take a request body because the customer ID is derived from the required Customer Bearer token (JWT).",
         "responses": {
           "200": {
             "description": "Successful response"
@@ -2799,7 +2799,38 @@
         },
         "responses": {
           "200": {
-            "description": "OK"
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "success": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "id": {
+                          "type": "string"
+                        },
+                        "title": {
+                          "type": "string"
+                        },
+                        "url": {
+                          "type": "string"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -3019,6 +3050,54 @@
         "responses": {
           "200": {
             "description": "OK"
+          }
+        }
+      }
+    },
+    "/customers/{id}/entitlements": {
+      "get": {
+        "tags": [
+          "Customers"
+        ],
+        "summary": "List customer entitlements",
+        "description": "Retrieve the active entitlements (feature flags) granted to a customer based on their active orders and subscriptions.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "object",
+                      "additionalProperties": {
+                        "type": "string"
+                      },
+                      "description": "A key-value map of active entitlements."
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }

@@ -1,0 +1,39 @@
+---
+title: "Revenue Sharing Models"
+description: "A guide to Affiliates, Splits, and Payees, and when to use each for your revenue share model."
+---
+
+Blink provides three distinct mechanisms for revenue sharing and money movement. Because they serve different purposes, choosing the right one is critical for your application's architecture.
+
+## 1. Affiliates (Referral Marketing)
+**Best for:** Creators, influencers, and marketers who refer customers to your store.
+
+The Affiliate system is designed for **referral links**. When a customer clicks an affiliate link (`?via=code`) and makes a purchase, Blink automatically calculates the commission and attributes the sale to the affiliate.
+
+- **Commission:** Fixed amount or percentage per sale.
+- **Payouts:** Managed centrally by the merchant via PayPal, Wise, or manual payouts (or automatically via Stripe Connect if configured).
+- **Dashboard:** Affiliates get their own dashboard to generate links, view clicks, and track conversions.
+
+**When to use it:** You want to pay people for sending traffic to your store.
+
+## 2. Splits (Collaborator Revenue)
+**Best for:** Co-creators, business partners, or joint ventures.
+
+Splits allow you to automatically divide revenue for a specific product across multiple Blink accounts. If you co-authored an ebook with another creator, you can set a 50/50 split on that specific product.
+
+- **Trigger:** Applies to every sale of the connected product automatically (no referral link needed).
+- **Payouts:** Payouts are transferred automatically to the collaborator's Blink account balance.
+- **Visibility:** Collaborators can see the sales of the split product in their own Blink dashboard.
+
+**When to use it:** You co-created a product with a partner and want to automate the revenue split forever.
+
+## 3. Payees (Multi-Vendor Marketplaces)
+**Best for:** Headless marketplaces, platforms, and aggregators where sellers own the product.
+
+Payees is our deepest API integration designed for **Stripe Connect** multi-vendor platforms. Instead of simply referring a sale (Affiliate) or splitting revenue (Splits), a Payee is the *actual seller of record*.
+
+- **How it works:** When generating a checkout session via the API (`POST /v1/checkouts`), you pass a `payee_id` (the Stripe Connect account of your vendor) and an `application_fee_amount` (your platform's cut). 
+- **Payouts:** The money flows directly into the Payee's Stripe account at checkout, minus your application fee. You never hold the funds.
+- **Headless Only:** Payees are managed entirely via the API and do not get a Blink dashboard.
+
+**When to use it:** You are building a custom marketplace (like an AI tool directory or a course platform) where users list and sell their own products on your frontend, and you take a platform fee.

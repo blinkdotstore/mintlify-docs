@@ -39,6 +39,7 @@
               "customization",
               "orders",
               "customers",
+              "seat-based-billing",
               "store-settings"
             ]
           },
@@ -104,6 +105,7 @@
           {
             "group": "Financials",
             "pages": [
+              "revenue-share",
               "merchant-of-records",
               "fees",
               "payouts"
@@ -137,7 +139,8 @@
           {
             "group": "Webhooks & Events",
             "pages": [
-              "api-reference/webhook-events"
+              "api-reference/webhook-events",
+              "api-reference/webhooks/webhook-signatures"
             ],
             "openapi": "api-reference/webhooks-api.json"
           }
