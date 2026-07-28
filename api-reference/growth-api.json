@@ -4725,11 +4725,5 @@
         }
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Splits",
-      "description": "Manage revenue splits and automatic payouts"
-    }
-  ]
+  }
 }

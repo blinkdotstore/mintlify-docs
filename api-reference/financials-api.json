@@ -3370,11 +3370,5 @@
         }
       }
     }
-  },
-  "tags": [
-    {
-      "name": "Payees",
-      "description": "Manage headless payee accounts and payouts"
-    }
-  ]
+  }
 }
