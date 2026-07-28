@@ -120,8 +120,7 @@
         "tab": "API",
         "pages": [
           "api-reference/introduction",
-          "api-reference/authentication",
-          "api-reference/errors",
+          "api-reference/test-mode",
           {
             "group": "Core",
             "pages": [
