@@ -1,0 +1,117 @@
+---
+title: 'Verify Webhook Signatures'
+description: 'Learn how to verify that webhook events were sent by Blink.'
+---
+
+Blink securely signs all webhook events it sends to your endpoints. This ensures that the payloads you receive are actually from Blink and have not been tampered with by a third party.
+
+You should always verify webhook signatures before processing them in your application.
+
+## The Signature Header
+
+When Blink sends a webhook to your server, it includes the following headers:
+- `Blink-Signature`: The cryptographic signature of the payload (e.g., `v1=a1b2c3d4...`)
+- `Blink-Timestamp`: The unix timestamp (in seconds) when the event was dispatched.
+- `Blink-Event`: The name of the event (e.g., `order.paid`).
+
+## How to Verify the Signature
+
+Blink uses HMAC with SHA-256 to sign webhook payloads. To verify the signature, you need the **Signing Secret** for your webhook endpoint (which you can find in the Blink dashboard or via the API).
+
+Follow these steps to verify the signature:
+
+1. **Extract the timestamp and signature** from the headers.
+2. **Prepare the signed payload string** by concatenating the timestamp, a dot (`.`), and the raw JSON request body: `${timestamp}.${rawBody}`.
+3. **Compute the expected HMAC signature** using SHA-256, your signing secret, and the signed payload string.
+4. **Compare the signatures**. If your computed signature matches the one in the `Blink-Signature` header (stripping the `v1=` prefix), the webhook is valid!
+
+### Example: Node.js (Express)
+
+Here is a complete example of how to verify a webhook signature in a Node.js Express application:
+
+```javascript
+const express = require('express');
+const crypto = require('crypto');
+
+const app = express();
+
+// The raw body is required to compute the signature correctly.
+app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
+  const signatureHeader = req.headers['blink-signature'];
+  const timestamp = req.headers['blink-timestamp'];
+  const webhookSecret = 'whsec_your_signing_secret_here';
+
+  if (!signatureHeader || !timestamp) {
+    return res.status(400).send('Missing webhook headers');
+  }
+
+  // Extract the actual signature hash from the v1= prefix
+  const signature = signatureHeader.replace('v1=', '');
+
+  // 1. Prepare the payload string
+  const payloadToSign = `${timestamp}.${req.body.toString('utf8')}`;
+
+  // 2. Compute the HMAC SHA-256 signature
+  const expectedSignature = crypto
+    .createHmac('sha256', webhookSecret)
+    .update(payloadToSign)
+    .digest('hex');
+
+  // 3. Compare the signatures securely
+  if (crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
+    console.log('✅ Webhook signature verified!');
+    
+    // Parse the body and process the event
+    const event = JSON.parse(req.body.toString('utf8'));
+    console.log(`Received event: ${event.event}`);
+    
+    res.status(200).send('OK');
+  } else {
+    console.error('❌ Invalid webhook signature');
+    res.status(401).send('Invalid signature');
+  }
+});
+
+app.listen(3000, () => console.log('Listening on port 3000'));
+```
+
+### Example: Next.js (App Router)
+
+If you are using Next.js App Router, you can verify webhooks like this:
+
+```typescript
+import { NextResponse } from 'next/server';
+import crypto from 'crypto';
+
+export async function POST(req: Request) {
+  const signatureHeader = req.headers.get('blink-signature');
+  const timestamp = req.headers.get('blink-timestamp');
+  const webhookSecret = process.env.BLINK_WEBHOOK_SECRET!;
+
+  if (!signatureHeader || !timestamp) {
+    return NextResponse.json({ error: 'Missing headers' }, { status: 400 });
+  }
+
+  const signature = signatureHeader.replace('v1=', '');
+  const rawBody = await req.text();
+  const payloadToSign = `${timestamp}.${rawBody}`;
+
+  const expectedSignature = crypto
+    .createHmac('sha256', webhookSecret)
+    .update(payloadToSign)
+    .digest('hex');
+
+  if (signature !== expectedSignature) {
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+
+  const event = JSON.parse(rawBody);
+  console.log('✅ Verified Event:', event.event);
+
+  return NextResponse.json({ received: true });
+}
+```
+
+## Replay Attacks
+
+As a best practice to prevent replay attacks, you should check that the `Blink-Timestamp` is within a reasonable tolerance (e.g., 5 minutes) of your server's current time.

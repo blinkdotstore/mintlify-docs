@@ -395,11 +395,11 @@
             "group": "Webhooks & Events",
             "pages": [
               "api-reference/webhook-events",
-              "api-reference/webhooks/webhook-signatures",
+              "api-reference/verify-webhook-signatures",
+              "api-reference/webhooks/event-delivery-log",
               {
                 "group": "Webhooks",
                 "pages": [
-                  "api-reference/webhooks/event-delivery-log",
                   "api-reference/webhooks/track-an-event"
                 ]
               }
