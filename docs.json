@@ -249,6 +249,14 @@
                 "pages": [
                   "api-reference/metrics/retrieve-metrics-for-revenue-orders-and-subscriptions"
                 ]
+              },
+              {
+                "group": "Audience",
+                "pages": [
+                  "api-reference/audience/delete-a-tag",
+                  "api-reference/audience/list-all-broadcasts",
+                  "api-reference/audience/list-all-tags"
+                ]
               }
             ]
           },
@@ -379,14 +387,6 @@
                 "pages": [
                   "api-reference/geo-pricing/create-geo-pricing-rule",
                   "api-reference/geo-pricing/list-geo-pricing-rules"
-                ]
-              },
-              {
-                "group": "Audience",
-                "pages": [
-                  "api-reference/audience/delete-a-tag",
-                  "api-reference/audience/list-all-broadcasts",
-                  "api-reference/audience/list-all-tags"
                 ]
               }
             ]
