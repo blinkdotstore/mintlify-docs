@@ -14,7 +14,7 @@
     "/events": {
       "post": {
         "summary": "Track an Event",
-        "description": "Tracks a custom event for analytics purposes. Requires the `x-store-id` header for identifying the store. Accepts an `eventName`, `eventData`, `url`, and `referrer`. Utilizes Umami for tracking and groups URLs under the store for Blink's dashboard.\n\n**Business Use Case:** This endpoint allows for tracking custom events for a store, useful in analyzing customer interactions, marketing effectiveness, and performance metrics.\n\n**Request Body:**\n- `eventName` (string, required): The name of the event.\n- `eventData` (object, optional): Additional data related to the event.\n\n**Responses:**\n- **200:** Event tracked successfully.\n",
+        "description": "Tracks a custom event for analytics purposes. Requires the `x-store-id` header for identifying the store. Accepts an `eventName`, `eventData`, `url`, and `referrer`. Utilizes Umami for tracking and groups URLs under the store for Blink's dashboard.\n\n**Use case:** This endpoint allows for tracking custom events for a store, useful in analyzing customer interactions, marketing effectiveness, and performance metrics.\n\n**Request Body:**\n- `eventName` (string, required): The name of the event.\n- `eventData` (object, optional): Additional data related to the event.\n\n**Responses:**\n- **200:** Event tracked successfully.\n",
         "tags": [
           "Webhooks"
         ],
@@ -43,7 +43,7 @@
       },
       "get": {
         "summary": "Event Delivery Log",
-        "description": "Retrieves a list of tracked events for a specific store based on the `x-store-id` header. Supports filtering by event name and pagination.\n\n**Business Use Case:** Useful for auditing and reviewing the events tracked, aiding in performance monitoring and data analysis.\n\n**Query Parameters:**\n- `limit` (integer, optional): The maximum number of events to return.\n- `event` (string, optional): The name of the event to filter by.\n\n**Responses:**\n- **200:** A list of tracked events.\n",
+        "description": "Retrieves a list of tracked events for a specific store based on the `x-store-id` header. Supports filtering by event name and pagination.\n\n**Use case:** Useful for auditing and reviewing the events tracked, aiding in performance monitoring and data analysis.\n\n**Query Parameters:**\n- `limit` (integer, optional): The maximum number of events to return.\n- `event` (string, optional): The name of the event to filter by.\n\n**Responses:**\n- **200:** A list of tracked events.\n",
         "tags": [
           "Webhooks"
         ],
