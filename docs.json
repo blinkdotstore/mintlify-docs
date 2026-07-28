@@ -120,29 +120,134 @@
         "tab": "API",
         "pages": [
           "api-reference/introduction",
-          "api-reference/test-mode",
+          "api-reference/authentication",
+          "api-reference/errors",
           {
             "group": "Core",
             "pages": [
-              "api-reference/embedded-checkout"
-            ],
-            "openapi": "api-reference/core-api.json"
+              {
+                "group": "Products",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Checkouts",
+                "openapi": "api-reference/core-api.json"
+              },
+              "api-reference/embedded-checkout",
+              {
+                "group": "Orders",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Customers",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Subscriptions",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Customer Portal",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Meters",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Deliverables",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "License Keys",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Organizations",
+                "openapi": "api-reference/core-api.json"
+              },
+              {
+                "group": "Metrics",
+                "openapi": "api-reference/core-api.json"
+              }
+            ]
           },
           {
             "group": "Financials",
-            "openapi": "api-reference/financials-api.json"
+            "pages": [
+              {
+                "group": "Invoices",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Subscription Invoices",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Payouts",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Refunds",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Disputes",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Taxes",
+                "openapi": "api-reference/financials-api.json"
+              },
+              {
+                "group": "Payees",
+                "openapi": "api-reference/financials-api.json"
+              }
+            ]
           },
           {
             "group": "Growth & Marketing",
-            "openapi": "api-reference/growth-api.json"
+            "pages": [
+              {
+                "group": "Discounts",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Bumps",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Cart Recovery",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Affiliates",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Splits",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Geo Pricing",
+                "openapi": "api-reference/growth-api.json"
+              },
+              {
+                "group": "Audience",
+                "openapi": "api-reference/growth-api.json"
+              }
+            ]
           },
           {
             "group": "Webhooks & Events",
             "pages": [
               "api-reference/webhook-events",
-              "api-reference/webhooks/webhook-signatures"
-            ],
-            "openapi": "api-reference/webhooks-api.json"
+              "api-reference/webhooks/webhook-signatures",
+              {
+                "group": "Webhooks",
+                "openapi": "api-reference/webhooks-api.json"
+              }
+            ]
           }
         ],
         "icon": "code"

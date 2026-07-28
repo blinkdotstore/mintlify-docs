@@ -42,7 +42,7 @@
         }
       },
       "get": {
-        "summary": "List Tracked Events",
+        "summary": "Event Delivery Log",
         "description": "Retrieves a list of tracked events for a specific store based on the `x-store-id` header. Supports filtering by event name and pagination.\n\n**Business Use Case:** Useful for auditing and reviewing the events tracked, aiding in performance monitoring and data analysis.\n\n**Query Parameters:**\n- `limit` (integer, optional): The maximum number of events to return.\n- `event` (string, optional): The name of the event to filter by.\n\n**Responses:**\n- **200:** A list of tracked events.\n",
         "tags": [
           "Webhooks"

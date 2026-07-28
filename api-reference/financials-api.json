@@ -530,19 +530,6 @@
           }
         }
       }
-    },
-    "/usage-records": {
-      "get": {
-        "tags": [
-          "Meters"
-        ],
-        "summary": "List usage records",
-        "responses": {
-          "200": {
-            "description": "OK"
-          }
-        }
-      }
     }
   },
   "components": {
