@@ -3013,7 +3013,7 @@
     "/events": {
       "get": {
         "tags": [
-          "Core"
+          "Events"
         ],
         "summary": "List events",
         "responses": {
