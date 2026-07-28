@@ -3242,7 +3242,8 @@
                 "type": "integer"
               },
               "metered_prices": {
-                "type": "object"
+                "type": "object",
+                "description": "Configure your overage pricing here. If a user exceeds their deliverable grant, they will be billed at these rates."
               },
               "requires_license_key": {
                 "type": "boolean"
@@ -3365,7 +3366,8 @@
                 "type": "integer"
               },
               "metered_prices": {
-                "type": "object"
+                "type": "object",
+                "description": "Configure your overage pricing here. If a user exceeds their deliverable grant, they will be billed at these rates."
               },
               "requires_license_key": {
                 "type": "boolean"

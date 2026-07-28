@@ -2419,7 +2419,7 @@
           "Meters"
         ],
         "summary": "Report Metered Usage",
-        "description": "Extremely high-throughput endpoint to inject usage events.\n\n**Usage:** API-first dev tools reporting token consumption every time their customer makes a request, allowing Blink to calculate the exact invoice at the end of the month.",
+        "description": "Pushes usage directly to Stripe's v2 Meter Events API. Overages are automatically calculated against the product's metered_prices and billed at the end of the cycle. Note: This endpoint does not return a synchronous 'new balance' due to Stripe's asynchronous invoice calculation. Rely on webhooks for final billing amounts.",
         "requestBody": {
           "content": {
             "application/json": {

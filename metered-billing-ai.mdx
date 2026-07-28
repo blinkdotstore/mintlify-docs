@@ -1,0 +1,57 @@
+---
+title: 'Metered Billing for AI Apps'
+description: 'An end-to-end guide on granting credits and charging overages for AI applications'
+---
+
+Building an AI application often requires a hybrid billing model: you want to charge a flat subscription fee that includes a base allowance of AI credits, and then seamlessly charge users for any usage that exceeds that allowance. 
+
+Blink natively supports this model by combining **Subscription Products**, **Metered Credits Deliverables**, and our **Usage Records API**. This guide walks you through the entire lifecycle.
+
+## 1. Create the Product and Configure Overage Pricing
+
+The foundation of your billing model is the Product. Here, you define the flat subscription fee (e.g., $20/month) and the overage rate (e.g., $0.005 per credit).
+
+When creating your product (via the dashboard or the API), ensure you set:
+- **Pricing Model**: `subscription`
+- **Subscription Interval**: `month` (or your preferred cycle)
+- **Metered Pricing**: Enable metered pricing (`has_metered: true` in the API) and define your `metered_prices` tiers. This explicitly sets the overage rate that Stripe will use when the user exhausts their base allowance.
+
+## 2. Issue the Base Allowance (Metered Credits Deliverable)
+
+Now that you have a subscription product that can bill for overages, you need to grant the customer their base allowance (e.g., 10,000 AI tokens) every billing cycle.
+
+You do this by attaching a **Metered Credits Deliverable** to your Product in the dashboard:
+1. Navigate to **Deliverables** in your Blink dashboard.
+2. Add a new **Metered Credits** deliverable.
+3. Set the grant amount (e.g., `10,000`).
+4. Select whether unused credits should roll over to the next billing cycle.
+5. Attach this deliverable to your Product.
+
+When a customer subscribes, Blink automatically provisions a Meter and grants them the specified credits. This grant resets (and potentially rolls over) automatically upon every subscription renewal.
+
+## 3. Provision Access (API Keys)
+
+If your app requires developers or users to authenticate programmatically, you can attach an **API Keys Deliverable** to the same product. 
+
+Blink will automatically generate secure API keys for the customer. Furthermore, if you configure the deliverable to *Revoke access on subscription end*, Blink will auto-lock the API keys if the subscription is canceled or fails to renew, instantly gating access.
+
+## 4. Report Consumption
+
+As the customer uses your AI application, you report their consumption to Blink using the [Usage Records API](/api-reference/meters/list-usage-records).
+
+When you `POST /v1/usage-records` with the consumed quantity:
+- Blink decrements the customer's base allowance (the meter balance).
+- Behind the scenes, **Blink pushes the exact consumption event to Stripe's v2 Meter Events API.**
+
+### How Overage is Handled
+
+You do not need to write custom logic to detect when the balance hits zero.
+
+1. You simply report all usage unconditionally to the `POST /v1/usage-records` endpoint.
+2. Blink synchronizes the usage to Stripe.
+3. At the end of the billing cycle, Stripe automatically subtracts the base allowance (granted by the deliverable) from the total reported usage.
+4. If the usage exceeds the allowance, Stripe automatically invoices the customer for the difference using the **Overage Pricing** you configured on the Product in Step 1.
+
+<Note>
+Because overages are calculated by Stripe asynchronously at the end of the billing cycle, the `POST /v1/usage-records` endpoint does not synchronously return a "new balance" or "overage incurred" payload. Rely on the invoice webhooks for final billing amounts.
+</Note>

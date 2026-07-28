@@ -57,6 +57,7 @@
             "pages": [
               "add-products",
               "deliverables",
+              "metered-billing-ai",
               "share-product",
               "deleting-products",
               "products-sorting"
