@@ -112,6 +112,12 @@
             ],
             "icon": "dollar-sign",
             "expanded": true
+          },
+          {
+            "group": "Integrations",
+            "pages": [
+              "untitled-page"
+            ]
           }
         ],
         "icon": "file"
