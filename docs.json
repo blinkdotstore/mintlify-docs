@@ -117,7 +117,8 @@
             "group": "Integrations",
             "pages": [
               "untitled-page"
-            ]
+            ],
+            "icon": "layer-group"
           }
         ],
         "icon": "file"
