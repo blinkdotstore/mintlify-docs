@@ -344,6 +344,16 @@
                 ]
               },
               {
+                "group": "Upsells",
+                "pages": [
+                  "api-reference/upsells/list-all-store-upsells",
+                  "api-reference/upsells/retrieve-triggered-upsells",
+                  "api-reference/upsells/track-an-upsell-event",
+                  "api-reference/upsells/claim-an-upsell-offer",
+                  "api-reference/upsells/retrieve-upsell-performance"
+                ]
+              },
+              {
                 "group": "Cart Recovery",
                 "pages": [
                   "api-reference/cart-recovery/delete-a-cart-recovery-campaign",
