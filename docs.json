@@ -61,7 +61,8 @@
               "metered-billing-ai",
               "share-product",
               "deleting-products",
-              "products-sorting"
+              "products-sorting",
+              "discounts"
             ],
             "icon": "box",
             "expanded": true
@@ -98,8 +99,7 @@
               "cart-recovery",
               "bumps",
               "analytics",
-              "geo-pricing",
-              "discounts"
+              "geo-pricing"
             ]
           },
           {
