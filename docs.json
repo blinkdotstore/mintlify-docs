@@ -116,7 +116,8 @@
           {
             "group": "Integrations",
             "pages": [
-              "untitled-page"
+              "untitled-page",
+              "zapier"
             ],
             "icon": "layer-group"
           }
