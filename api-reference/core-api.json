@@ -5387,6 +5387,21 @@
                 }
               }
             }
+          },
+          "is_bundle": {
+            "type": "boolean",
+            "description": "Whether this product is a dynamic bundle.",
+            "example": true
+          },
+          "bundle_items": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "An array of product IDs to include in the bundle.",
+            "example": [
+              "1391e872-12f1-43eb-901c-f213e8ec3907"
+            ]
           }
         },
         "required": [
