@@ -9,7 +9,7 @@ Blink natively supports this model by combining **Subscription Products**, **Met
 
 ## 1. Create the Product and Configure Overage Pricing
 
-The foundation of your billing model is the Product. Here, you define the flat subscription fee (e.g., $20/month) and the overage rate (e.g., $0.005 per credit).
+The foundation of your billing model is the Product. Here, you define the flat subscription fee (e.g., \$20/month) and the overage rate (e.g., \$0.005 per credit).
 
 When creating your product (via the dashboard or the API), ensure you set:
 - **Pricing Model**: `subscription`
@@ -17,8 +17,8 @@ When creating your product (via the dashboard or the API), ensure you set:
 - **Metered Pricing**: Enable metered pricing (`has_metered: true` in the API) and define your `metered_prices` tiers. This explicitly sets the overage rate that Stripe will use when the user exhausts their base allowance.
 
 <Note>
-**Sub-cent Pricing (e.g., $0.005 per token)**
-Because the API accepts prices in integer cents (`unit_amount`), you cannot directly specify $0.005 (which is half a cent). Instead, you must package your credits into blocks. For example, to charge $0.005 per credit, price it as **$5.00 per 1,000 credits** by setting `unit_amount: 500` and configuring a `transform_quantity` block to divide usage by 1,000.
+**Sub-cent Pricing (e.g., \$0.005 per token)**
+Because the API accepts prices in integer cents (`unit_amount`), you cannot directly specify \$0.005 (which is half a cent). Instead, you must package your credits into blocks. For example, to charge \$0.005 per credit, price it as **\$5.00 per 1,000 credits** by setting `unit_amount: 500` and configuring a `transform_quantity` block to divide usage by 1,000.
 </Note>
 
 ## 2. Issue the Base Allowance (Metered Credits Deliverable)
