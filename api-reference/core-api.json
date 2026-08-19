@@ -4997,6 +4997,19 @@
               "trial_days": {
                 "type": "integer"
               },
+              "is_bundle": {
+                "type": "boolean"
+              },
+              "bundle_items": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "product_id": { "type": "string" },
+                    "variant_id": { "type": "string", "nullable": true }
+                  }
+                }
+              },
               "variants": {
                 "type": "array",
                 "items": {
@@ -5342,6 +5355,19 @@
                 },
                 "customer_portal_visibility": {
                   "type": "string"
+                },
+                "is_bundle": {
+                  "type": "boolean"
+                },
+                "bundle_items": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "product_id": { "type": "string" },
+                      "variant_id": { "type": "string", "nullable": true }
+                    }
+                  }
                 },
                 "variants": {
                   "type": "array",
