@@ -68,6 +68,13 @@
             "expanded": true
           },
           {
+            "group": "Bundles",
+            "pages": [
+              "api-reference/bundles/list-all-bundles",
+              "api-reference/bundles/create-a-new-bundle"
+            ]
+          },
+          {
             "group": "Growth tools",
             "icon": "rocket",
             "pages": [
@@ -146,6 +153,13 @@
                   "api-reference/products/retrieve-product-variant-details",
                   "api-reference/products/update-product-details",
                   "api-reference/products/update-product-variant-details"
+                ]
+              },
+              {
+                "group": "Bundles",
+                "pages": [
+                  "api-reference/bundles/list-all-bundles",
+                  "api-reference/bundles/create-a-new-bundle"
                 ]
               },
               {

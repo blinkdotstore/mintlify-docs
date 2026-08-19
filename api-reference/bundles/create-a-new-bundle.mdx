@@ -1,0 +1,78 @@
+---
+title: "Create a New Bundle"
+api: "POST https://api.blink.store/v1/products"
+description: "Create a new bundle containing existing products."
+---
+
+### Body Parameters
+
+<ParamField body="name" type="string" required>
+  The name of the bundle.
+</ParamField>
+
+<ParamField body="price" type="integer" required>
+  The total price of the bundle in cents (e.g., `4900` for $49.00).
+</ParamField>
+
+<ParamField body="pricing_model" type="string" required>
+  The pricing model. Usually `standard` for bundles.
+</ParamField>
+
+<ParamField body="is_bundle" type="boolean" required>
+  Must be set to `true` to flag this product as a bundle.
+</ParamField>
+
+<ParamField body="bundle_items" type="array" required>
+  An array of objects representing the products included in this bundle.
+  <Expandable title="properties">
+    <ParamField body="product_id" type="string" required>
+      The ID of the existing product to include.
+    </ParamField>
+    <ParamField body="custom_description" type="string">
+      An optional custom description for this item within the bundle.
+    </ParamField>
+  </Expandable>
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="object">
+  The newly created bundle object.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      The unique identifier for the newly created bundle.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      The name of the bundle.
+    </ResponseField>
+    <ResponseField name="is_bundle" type="boolean">
+      Will be `true`.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl --request POST \
+  --url 'https://api.blink.store/v1/products' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --header 'Content-Type: application/json' \
+  --header 'x-store-id: YOUR_STORE_ID' \
+  --data '{
+    "name": "Ultimate Toolkit",
+    "price": 4900,
+    "pricing_model": "standard",
+    "is_bundle": true,
+    "bundle_items": [
+      {
+        "product_id": "prod_123"
+      },
+      {
+        "product_id": "prod_456"
+      }
+    ]
+  }'
+```
+
+</RequestExample>

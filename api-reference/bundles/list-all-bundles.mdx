@@ -1,0 +1,57 @@
+---
+title: "List All Bundles"
+api: "GET https://api.blink.store/v1/products"
+description: "Retrieve a list of all your bundles by passing `is_bundle=true`."
+---
+
+### Query Parameters
+
+<ParamField query="is_bundle" type="boolean" required>
+  Must be set to `true` to filter the products list and only return bundles.
+</ParamField>
+
+<ParamField query="status" type="string">
+  Filter by bundle status. E.g., `active`, `archived`, `draft`.
+</ParamField>
+
+<ParamField query="limit" type="integer">
+  Limit the number of results returned.
+</ParamField>
+
+<ParamField query="page" type="integer">
+  Page number for pagination.
+</ParamField>
+
+### Response
+
+<ResponseField name="data" type="array">
+  An array of bundle objects.
+  <Expandable title="properties">
+    <ResponseField name="id" type="string">
+      The unique identifier for the bundle.
+    </ResponseField>
+    <ResponseField name="name" type="string">
+      The name of the bundle.
+    </ResponseField>
+    <ResponseField name="price" type="integer">
+      The total price of the bundle in cents.
+    </ResponseField>
+    <ResponseField name="is_bundle" type="boolean">
+      Always `true` for bundles.
+    </ResponseField>
+    <ResponseField name="bundle_items" type="array">
+      An array of products included in the bundle.
+    </ResponseField>
+  </Expandable>
+</ResponseField>
+
+<RequestExample>
+
+```bash cURL
+curl --request GET \
+  --url 'https://api.blink.store/v1/products?is_bundle=true' \
+  --header 'Authorization: Bearer YOUR_API_KEY' \
+  --header 'x-store-id: YOUR_STORE_ID'
+```
+
+</RequestExample>
