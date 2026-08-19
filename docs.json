@@ -68,13 +68,6 @@
             "expanded": true
           },
           {
-            "group": "Bundles",
-            "pages": [
-              "api-reference/bundles/list-all-bundles",
-              "api-reference/bundles/create-a-new-bundle"
-            ]
-          },
-          {
             "group": "Growth tools",
             "icon": "rocket",
             "pages": [
