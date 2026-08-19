@@ -1,0 +1,37 @@
+---
+title: "Deactivate a License Key"
+openapi: post /license-keys/deactivate
+---
+
+Deactivate a specific machine instance for a given license key. This frees up an activation slot, allowing the customer to activate the license on a new device.
+
+This endpoint is **Client-Safe**. You do not need to provide your `blnk_live_` secret key. You can call this directly from a desktop application (like Electron, Tauri, or Swift) by simply providing the `license_key` and the `instance_id`.
+
+<RequestExample>
+
+```bash cURL
+curl --request POST \
+  --url https://api.blink.store/v1/license-keys/deactivate \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "license_key": "YOUR_LICENSE_KEY_STRING",
+    "instance_id": "INSTANCE_UUID"
+  }'
+```
+
+```javascript JavaScript
+fetch("https://api.blink.store/v1/license-keys/deactivate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    "license_key": "YOUR_LICENSE_KEY_STRING",
+    "instance_id": "INSTANCE_UUID"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+</RequestExample>

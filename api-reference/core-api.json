@@ -4443,6 +4443,9 @@
         "properties": {
           "license_key": {
             "type": "string"
+          },
+          "instance_name": {
+            "type": "string"
           }
         },
         "required": [
@@ -4455,6 +4458,21 @@
           "activated": {
             "type": "boolean"
           },
+          "instance": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string"
+              },
+              "name": {
+                "type": "string"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              }
+            }
+          },
           "meta": {
             "type": "object",
             "properties": {
@@ -4462,6 +4480,9 @@
                 "type": "string"
               },
               "activations": {
+                "type": "integer"
+              },
+              "active_instances": {
                 "type": "integer"
               },
               "activation_limit": {
@@ -4539,6 +4560,9 @@
         "properties": {
           "license_key": {
             "type": "string"
+          },
+          "instance_id": {
+            "type": "string"
           }
         },
         "required": [
@@ -4546,6 +4570,53 @@
         ]
       },
       "LicenseKeyValidateResponse": {
+        "type": "object",
+        "properties": {
+          "valid": {
+            "type": "boolean"
+          },
+          "meta": {
+            "type": "object",
+            "properties": {
+              "key": {
+                "type": "string"
+              },
+              "activations": {
+                "type": "integer"
+              },
+              "active_instances": {
+                "type": "integer"
+              },
+              "activation_limit": {
+                "type": "integer"
+              },
+              "expires_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "customer_id": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      },
+      "LicenseKeyDeactivateRequest": {
+        "type": "object",
+        "properties": {
+          "license_key": {
+            "type": "string"
+          },
+          "instance_id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "license_key",
+          "instance_id"
+        ]
+      },
+      "LicenseKeyDeactivateResponse": {
         "type": "object",
         "properties": {
           "valid": {

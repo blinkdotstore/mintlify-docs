@@ -1,3 +1,37 @@
 ---
+title: "Validate a License Key"
 openapi: post /license-keys/validate
 ---
+
+Validate a license key and optionally verify if a specific machine instance is still active. 
+
+This endpoint is **Client-Safe**. You do not need to provide your `blnk_live_` secret key. You can call this directly from a desktop application (like Electron, Tauri, or Swift) by simply providing the `license_key` and an optional `instance_id`.
+
+<RequestExample>
+
+```bash cURL
+curl --request POST \
+  --url https://api.blink.store/v1/license-keys/validate \
+  --header 'Content-Type: application/json' \
+  --data '{
+    "license_key": "YOUR_LICENSE_KEY_STRING",
+    "instance_id": "OPTIONAL_INSTANCE_UUID"
+  }'
+```
+
+```javascript JavaScript
+fetch("https://api.blink.store/v1/license-keys/validate", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    "license_key": "YOUR_LICENSE_KEY_STRING",
+    "instance_id": "OPTIONAL_INSTANCE_UUID"
+  })
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
+
+</RequestExample>
