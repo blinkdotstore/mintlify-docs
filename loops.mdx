@@ -1,0 +1,36 @@
+---
+title: "Loops Integration"
+description: "Automatically sync customers and trigger email automations using our Loops integration."
+---
+
+Connect your Blink Store to [Loops](https://loops.so) to automatically sync your customers and trigger email sequences whenever important events happen in your store. 
+
+## Getting Started
+
+To connect your Loops account to Blink:
+
+1. Log in to your [Loops account](https://app.loops.so) and go to the **API** tab in your Settings.
+2. Generate a new API Key and copy it.
+3. In your Blink Store dashboard, navigate to **Settings** > **Integrations**.
+4. Under the Loops integration, click **Connect**.
+5. Paste your Loops API Key and save.
+
+That's it! Blink will now automatically dispatch events directly to your Loops account.
+
+---
+
+## Supported Events
+
+When a customer completes a purchase, Blink sends an event to Loops. If the customer does not exist in your Loops audience, they are automatically added. 
+
+Currently, Blink supports the following event:
+
+### `Order Placed`
+Triggers whenever a customer successfully places an order (both paid and free checkouts).
+
+**Event Properties:**
+- `productName`: The name of the product purchased.
+- `price`: The price of the product.
+- `orderId`: The unique identifier of the order.
+
+You can use these event properties as variables inside your Loops email templates (e.g., `Thanks for buying {{productName}}!`).
