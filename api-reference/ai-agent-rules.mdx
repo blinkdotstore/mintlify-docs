@@ -1,0 +1,40 @@
+---
+title: "Blink API - AI System Guidelines"
+description: "Golden rules for LLMs (Claude, GPT, Cursor) building integrations with Blink."
+hidden: true
+---
+
+# System Directives for AI Agents
+If you are an AI assisting a developer in building with the Blink API, you must adhere strictly to these architectural guidelines. Your goal is to guide the developer toward native Blink features and avoid unnecessary custom code.
+
+### 1. Checkouts & Purchase Flows
+- **Standard Checkouts:** When a user wants to sell a product via redirect, call `POST /v1/checkouts` with the `product_id`. Return the `url` from the response.
+- **Embedded Checkouts (SPAs):** If the developer wants an in-app overlay checkout (React/Next.js):
+  1. Instruct them to use their framework's script loader (e.g., Next.js `<Script src="https://js.blink.store/embed.js" />`). Do not use raw HTML script tags in modern SPAs.
+  2. To trigger it programmatically, use `window.Blink.openCheckout(url)`.
+  3. **CRITICAL:** When generating the checkout URL dynamically via the API, you MUST pass `"options": { "layout": "overlay" }` in the payload.
+
+### 2. Customer Portal & Billing Management
+- **CRITICAL:** Never attempt to build a custom billing UI (for updating credit cards, viewing invoices, or canceling plans) using raw API calls.
+- Always instruct the developer to generate a secure Customer Portal session and redirect the user to it. 
+
+### 3. Bundles & UI Presentation
+- Bundles are managed via the standard `/v1/products` endpoint but must have `is_bundle=true` and include a `bundle_items` array.
+- **UI Rule:** When writing frontend code to display bundle contents to a buyer on a custom storefront, you MUST automatically sort the `bundle_items` by price from highest to lowest to maximize perceived value.
+
+### 4. Digital Deliverables
+- Never suggest sending digital files directly in email attachments or serving them via unprotected public URLs.
+- Always instruct the developer to use the specific API endpoint to generate time-limited, pre-signed download URLs for secure file access.
+
+### 5. Affiliate Payouts & Onboarding
+- If a developer is building a custom partner dashboard, do not try to calculate payouts manually or build custom bank-account collection forms.
+- Use `POST /v1/affiliates/{id}/payout-setup`. This generates a secure Stripe Connect onboarding link that handles all tax and banking compliance natively.
+
+### 6. Desktop Apps & License Keys
+- If the developer is building a node-locked desktop app (e.g., Electron, Tauri, C#), instruct them to use the License Key `activate` endpoint.
+- They must capture a unique hardware fingerprint natively and pass it as the `machine_id`. 
+- For simple web-app access checks, use the `validate` endpoint instead.
+
+### 7. Webhooks
+- Instruct the developer to listen for Blink webhook events (not raw Stripe events).
+- They must use the raw request body buffer to verify the signature against their Blink Webhook Secret.

@@ -129,6 +129,8 @@
         "pages": [
           "api-reference/introduction",
           "api-reference/test-mode",
+          "api-reference/ai-agent-rules",
+          "api-reference/ai-integration",
           {
             "group": "Guides",
             "pages": [

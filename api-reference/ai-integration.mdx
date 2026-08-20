@@ -1,0 +1,27 @@
+---
+title: "AI Integration (Cursor & Claude)"
+description: "How to instantly build Blink integrations using AI agents like Cursor, Windsurf, or Claude."
+---
+
+Blink provides native, first-class support for AI coding agents. Instead of manually reading through our API reference to write fetch requests or define schemas, you can point your AI directly to our **Master Agent File**.
+
+## The Master Agent File (`llms-full.txt`)
+
+Our documentation automatically generates an AI-optimized file at `https://docs.blink.store/llms-full.txt`. This single file contains:
+1. **Blink Architectural Golden Rules:** Strict instructions on when to use Embedded checkouts, how to handle deliverables securely, and webhook best practices.
+2. **Complete OpenAPI Schemas:** Every endpoint, payload, and response format in our API.
+
+Because modern AI models (like Claude 3.5 Sonnet and GPT-4o) have massive context windows, they can instantly read this entire file and write flawless integration code on the first try.
+
+## How to use it in Cursor or Windsurf
+
+If you are building your integration inside an AI IDE like Cursor or Windsurf, simply `@`-mention the URL in your chat prompt.
+
+**Example Prompt:**
+> `@https://docs.blink.store/llms-full.txt` I am building a Next.js application. Please write a server action that creates a Blink checkout session for my product `prod_123`, and then write the client-side code to trigger the embedded overlay checkout when the user clicks "Buy Now".
+
+## How to use it in ChatGPT or Claude web
+
+If you are using ChatGPT or Claude on the web, you can either:
+1. Paste the `https://docs.blink.store/llms-full.txt` URL directly into your prompt.
+2. Download the `.txt` file and attach it to your "Claude Project" or "Custom GPT" as persistent knowledge. 
