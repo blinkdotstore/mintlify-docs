@@ -28,6 +28,7 @@ If you're using the Shopper API or building a custom storefront, ensure that you
 ## Test Mode Sandboxing Rules
 
 When the dashboard is in Test Mode, the following rules apply:
+- **Products:** Your product catalog is completely isolated between live and test modes. Any products created while in Test Mode will not appear on your live storefront, and live products are hidden while testing.
 - **Analytics & Overview:** Revenue, MRR, conversion rates, and sales data are recalculated using only test volume.
 - **Orders & Transactions:** Only test purchases, refunds, and failed checkout attempts are shown.
 - **Customers & Subscriptions:** Only customers and subscriptions created via test API keys or test checkouts are visible.
