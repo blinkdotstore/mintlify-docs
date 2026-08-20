@@ -3809,6 +3809,9 @@
         "properties": {
           "license_key": {
             "type": "string"
+          },
+          "product_id": {
+            "type": "string"
           }
         },
         "required": [
@@ -3825,6 +3828,9 @@
             "type": "object",
             "properties": {
               "key": {
+                "type": "string"
+              },
+              "product_id": {
                 "type": "string"
               },
               "activations": {
@@ -3905,6 +3911,9 @@
         "properties": {
           "license_key": {
             "type": "string"
+          },
+          "product_id": {
+            "type": "string"
           }
         },
         "required": [
@@ -3921,6 +3930,9 @@
             "type": "object",
             "properties": {
               "key": {
+                "type": "string"
+              },
+              "product_id": {
                 "type": "string"
               },
               "activations": {

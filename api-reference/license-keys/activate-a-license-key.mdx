@@ -15,7 +15,8 @@ curl --request POST \
   --header 'Content-Type: application/json' \
   --data '{
     "license_key": "YOUR_LICENSE_KEY_STRING",
-    "instance_name": "Omar'\''s MacBook Pro"
+    "instance_name": "Omar'\''s MacBook Pro",
+    "product_id": "OPTIONAL_PRODUCT_ID"
   }'
 ```
 
@@ -27,7 +28,8 @@ fetch("https://api.blink.store/v1/license-keys/activate", {
   },
   body: JSON.stringify({
     "license_key": "YOUR_LICENSE_KEY_STRING",
-    "instance_name": "Omar's MacBook Pro"
+    "instance_name": "Omar's MacBook Pro",
+    "product_id": "OPTIONAL_PRODUCT_ID"
   })
 })
 .then(response => response.json())
