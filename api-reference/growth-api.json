@@ -2214,7 +2214,8 @@
                 "type": "string"
               },
               "amount": {
-                "type": "number"
+                "type": "integer",
+                "description": "The amount in cents (e.g. 4700 for $47.00)"
               },
               "status": {
                 "type": "string"

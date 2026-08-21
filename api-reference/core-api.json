@@ -478,7 +478,7 @@
           "License Keys"
         ],
         "summary": "Revoke a license key",
-        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key’s status before revocation. Suitable when a license has been compromised or needs termination.",
+        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key\u2019s status before revocation. Suitable when a license has been compromised or needs termination.",
         "parameters": [
           {
             "name": "id",
@@ -2808,7 +2808,8 @@
                 "type": "string"
               },
               "amount": {
-                "type": "number"
+                "type": "integer",
+                "description": "The amount in cents (e.g. 4700 for $47.00)"
               },
               "status": {
                 "type": "string"
@@ -5005,8 +5006,13 @@
                 "items": {
                   "type": "object",
                   "properties": {
-                    "product_id": { "type": "string" },
-                    "variant_id": { "type": "string", "nullable": true }
+                    "product_id": {
+                      "type": "string"
+                    },
+                    "variant_id": {
+                      "type": "string",
+                      "nullable": true
+                    }
                   }
                 }
               },
@@ -5364,8 +5370,13 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "product_id": { "type": "string" },
-                      "variant_id": { "type": "string", "nullable": true }
+                      "product_id": {
+                        "type": "string"
+                      },
+                      "variant_id": {
+                        "type": "string",
+                        "nullable": true
+                      }
                     }
                   }
                 },

@@ -134,7 +134,8 @@
             "type": "string"
           },
           "amount": {
-            "type": "number"
+            "type": "integer",
+            "description": "The amount in cents (e.g. 4700 for $47.00)"
           },
           "status": {
             "type": "string"
@@ -2801,7 +2802,8 @@
                 "type": "string"
               },
               "amount": {
-                "type": "number"
+                "type": "integer",
+                "description": "The amount in cents (e.g. 4700 for $47.00)"
               },
               "net_amount": {
                 "type": "number"
