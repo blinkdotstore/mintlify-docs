@@ -115,3 +115,23 @@ export async function POST(req: Request) {
 ## Replay Attacks
 
 As a best practice to prevent replay attacks, you should check that the `Blink-Timestamp` is within a reasonable tolerance (e.g., 5 minutes) of your server's current time.
+
+## Test vs Live Webhooks
+
+<Warning>
+**Security Best Practice:** A cryptographically verified webhook only proves that the payload was sent by Blink. It does **not** prove that the customer actually paid real money!
+
+Blink sends webhooks for both **Test** (simulated) purchases and **Live** (real) purchases. An attacker could use a test card on your storefront checkout to trigger a perfectly valid, signed webhook.
+
+To avoid accidentally giving away your product for free, you must always explicitly check the `mode` parameter in the webhook JSON payload:
+
+```json
+{
+  "event": "order.paid",
+  "mode": "live",
+  // ...
+}
+```
+
+If your integration is in production, you should ignore or drop any webhooks where `mode === 'test'`.
+</Warning>
