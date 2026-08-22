@@ -38,6 +38,22 @@ window.Blink.openCheckout('https://yourstore.blink.store/product-slug');
 window.Blink.closeCheckout();
 ```
 
+### **Advanced Options (Theme Auto-Detection)**
+By default, the embedded checkout will automatically detect the host website's theme (light or dark mode) and apply the correct backdrop and checkout UI seamlessly. This overrides the store's default "Overlay Theme Mode" setting. 
+
+If you want to manually force a specific theme, or disable auto-detection, you can pass an `options` object:
+
+```javascript
+// Force dark mode
+window.Blink.openCheckout('https://...', { theme: 'dark' });
+
+// Force light mode
+window.Blink.openCheckout('https://...', { theme: 'light' });
+
+// Disable auto-detection (respects the store's default setting)
+window.Blink.openCheckout('https://...', { theme: 'none' });
+```
+
 <Note>
 When generating the checkout URL dynamically via the API (`POST /v1/checkouts`), ensure you pass `"options": { "layout": "overlay" }` in the payload. Our `embed.js` script will automatically handle formatting the URL correctly to trigger the embed mode.
 </Note>
