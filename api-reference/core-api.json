@@ -3515,6 +3515,10 @@
           "metadata": {
             "type": "object"
           },
+          "custom_data": {
+            "type": "object",
+            "description": "Arbitrary JSON data that you can attach to the checkout session. This data will be echoed back verbatim in the order.created and order.paid webhooks."
+          },
           "seat_quantity": {
             "type": "integer",
             "description": "Pre-filled seat quantity"
