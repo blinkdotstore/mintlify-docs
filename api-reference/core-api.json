@@ -478,7 +478,7 @@
           "License Keys"
         ],
         "summary": "Revoke a license key",
-        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key\u2019s status before revocation. Suitable when a license has been compromised or needs termination.",
+        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key’s status before revocation. Suitable when a license has been compromised or needs termination.",
         "parameters": [
           {
             "name": "id",
@@ -2741,6 +2741,57 @@
                         "type": "string"
                       },
                       "description": "A key-value map of active entitlements."
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/v1/categories": {
+      "get": {
+        "tags": [
+          "Categories"
+        ],
+        "summary": "List all categories",
+        "description": "Returns a list of all categories for the authenticated store.",
+        "security": [
+          {
+            "ApiKeyAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "A list of categories",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "meta": {
+                      "type": "object",
+                      "properties": {
+                        "total": {
+                          "type": "integer"
+                        },
+                        "page": {
+                          "type": "integer"
+                        },
+                        "limit": {
+                          "type": "integer"
+                        },
+                        "has_more": {
+                          "type": "boolean"
+                        }
+                      }
+                    },
+                    "data": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/components/schemas/Category"
+                      }
                     }
                   }
                 }
@@ -5741,7 +5792,32 @@
             }
           }
         }
+      },
+      "Category": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "slug": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "slug"
+        ]
       }
     }
-  }
+  },
+  "tags": [
+    {
+      "name": "Categories",
+      "description": "Endpoints for fetching store product categories"
+    }
+  ]
 }
