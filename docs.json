@@ -66,6 +66,12 @@
             "expanded": true
           },
           {
+            "group": "Categories",
+            "pages": [
+              "api-reference/categories/list-all-categories"
+            ]
+          },
+          {
             "group": "Growth tools",
             "icon": "rocket",
             "pages": [
