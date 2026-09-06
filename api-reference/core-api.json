@@ -1451,6 +1451,15 @@
               "type": "integer",
               "default": 1
             }
+          },
+          {
+            "name": "category",
+            "in": "query",
+            "description": "Filter products by a specific category slug.",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
           }
         ],
         "responses": {
@@ -5332,6 +5341,23 @@
                     }
                   }
                 }
+              },
+              "categories": {
+                "type": "array",
+                "items": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
+                    },
+                    "slug": {
+                      "type": "string"
+                    }
+                  }
+                }
               }
             }
           }
@@ -5668,6 +5694,23 @@
                       },
                       "position": {
                         "type": "integer"
+                      }
+                    }
+                  }
+                },
+                "categories": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "string"
+                      },
+                      "name": {
+                        "type": "string"
+                      },
+                      "slug": {
+                        "type": "string"
                       }
                     }
                   }
