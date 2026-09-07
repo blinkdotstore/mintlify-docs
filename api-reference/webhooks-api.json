@@ -3229,6 +3229,11 @@
                 "items": {
                   "type": "object"
                 }
+              },
+              "subscription_interval_count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "The number of intervals between subscription billings."
               }
             }
           }
@@ -3293,6 +3298,11 @@
                 }
               }
             }
+          },
+          "subscription_interval_count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of intervals between subscription billings."
           }
         }
       },
@@ -3360,6 +3370,11 @@
                 "items": {
                   "type": "object"
                 }
+              },
+              "subscription_interval_count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "The number of intervals between subscription billings."
               }
             }
           }
@@ -3397,6 +3412,11 @@
           },
           "license_key_activation_limit": {
             "type": "integer"
+          },
+          "subscription_interval_count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of intervals between subscription billings."
           }
         }
       }

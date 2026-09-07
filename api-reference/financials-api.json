@@ -2706,6 +2706,11 @@
                     "created_at": {
                       "type": "string",
                       "format": "date-time"
+                    },
+                    "subscription_interval_count": {
+                      "type": "integer",
+                      "minimum": 1,
+                      "description": "The number of intervals between subscription billings."
                     }
                   }
                 }
@@ -2729,6 +2734,11 @@
                     }
                   }
                 }
+              },
+              "subscription_interval_count": {
+                "type": "integer",
+                "minimum": 1,
+                "description": "The number of intervals between subscription billings."
               }
             }
           }
@@ -2781,6 +2791,11 @@
                 }
               }
             }
+          },
+          "subscription_interval_count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of intervals between subscription billings."
           }
         }
       },
@@ -2846,6 +2861,11 @@
                 "created_at": {
                   "type": "string",
                   "format": "date-time"
+                },
+                "subscription_interval_count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "The number of intervals between subscription billings."
                 }
               }
             }
@@ -3050,6 +3070,11 @@
                       }
                     }
                   }
+                },
+                "subscription_interval_count": {
+                  "type": "integer",
+                  "minimum": 1,
+                  "description": "The number of intervals between subscription billings."
                 }
               }
             }
@@ -3129,6 +3154,11 @@
                 }
               }
             }
+          },
+          "subscription_interval_count": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "The number of intervals between subscription billings."
           }
         },
         "required": [
@@ -3245,6 +3275,11 @@
                       "month",
                       "year"
                     ]
+                  },
+                  "subscription_interval_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The number of intervals between subscription billings."
                   }
                 }
               },
@@ -3268,6 +3303,11 @@
                       "month",
                       "year"
                     ]
+                  },
+                  "subscription_interval_count": {
+                    "type": "integer",
+                    "minimum": 1,
+                    "description": "The number of intervals between subscription billings."
                   }
                 }
               }
