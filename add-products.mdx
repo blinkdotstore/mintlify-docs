@@ -40,23 +40,16 @@ The info tab is where you add basic product into
   Blink comes with a powerful, flexible rich text editor that gives you full control over how your content looks and feels. You can easily add headings, paragraphs, links, and lists, and style everything to match your voice and brand. Whether you’re keeping it clean and minimal or going more detailed and structured, you can format your description exactly the way you want—no limitations, no fuss.
 </Accordion>
 
-<Accordion title="Pricing">
-  **Free:**<br />Offer your product free to all customers.<br /><br />**Paid:**<br />Set a price to your product according to your store's currency.<br /><br />**Pay what you want:**<br />Pay What You Want (PWYW) pricing is a strategy where sellers allow buyers to determine the price for a product or service, often with an optional minimum, including zero.
+<Accordion title="Preview Link">
+  Provide an optional external URL where potential buyers can explore an interactive demo, live preview, or sample of your product before completing their purchase.
 </Accordion>
 
-<Accordion title="Currency">
-  You can set a currency per product, which overrides the store’s default currency if it differs.<br /><br />**Supported currencies:**
+<Accordion title="Price includes tax">
+  Toggle this on to display tax-inclusive pricing at checkout. Customers will pay the exact listed retail amount without additional sales tax or VAT added on top during the final step.
+</Accordion>
 
-  - USD (US Dollar)
-  - EUR (EURO)
-  - GBP (British Pound)
-  - CAD (Canadian Dollar)
-  - AUD (Australian Dollar)
-  - JPY (Japanese Yen)
-  - CHF (Swiss Franc)
-  - SEK (Swedish Krona)
-  - INR (Indian Rupee)
-  - BRL (Brazilian Real)Tax
+<Accordion title="Tax category">
+  Classify your product type (e.g., Digital Goods or Services) to ensure Blink automatically calculates and applies the correct regional sales tax, VAT, or GST rates based on your buyer's jurisdiction.
 </Accordion>
 
 ---
@@ -68,6 +61,50 @@ You can upload up to 10 images for each product, giving you plenty of room to sh
 For best results, we recommend using images that are at least 1600 × 1200px so everything looks sharp and clear.
 
 Supported formats: JPEG, PNG, and WebP
+
+---
+
+## Pricing
+
+<Accordion title="**Pricing model**">
+  Choose how you want to bill customers. Select **Standard pricing** for one-time purchases, **Subscriptions** for recurring billing schedules, or **Bundles** to package multiple existing products together into a single discounted offer.
+</Accordion>
+
+<Accordion title="**Currency**">
+  The base settlement currency for your product. All list prices, discounts, and checkout totals calculate from this baseline before any localized or multi-currency conversions apply.
+</Accordion>
+
+<Accordion title="**Price**">
+  The baseline retail amount charged. For one-time products and bundles, this is the total upfront checkout cost; for recurring products, it serves as the base amount billed at the start of each cycle.
+</Accordion>
+
+<Accordion title="**Billing interval & Free trial**">
+  _(Subscriptions only)_ Define how often your customer is charged (e.g., every 1 month, 3 months, or 1 year). You can also add an optional trial period (in days) to grant access before the first automated charge runs.
+</Accordion>
+
+<Accordion title="**Included products**">
+  _(Bundles only)_ Select the individual products packaged inside this bundle. Deliverables, entitlements, and access permissions associated with each selected product are granted simultaneously upon purchase.
+</Accordion>
+
+<Accordion title="**Automatic discount**">
+  Apply a storewide or product-specific discount rule directly to the checkout flow. Eligible buyers receive the price reduction instantly without needing to manually input a promo code.
+</Accordion>
+
+<Accordion title="**Seat pricing**">
+  Charge per individual user or seat on top of your base price. Ideal for SaaS, multi-user software licenses, or agency asset packs that scale based on team size.
+</Accordion>
+
+<Accordion title="**Metered billing**">
+  _(Subscriptions only)_ Bill customers dynamically based on real-time usage (such as API calls, bandwidth, or cloud storage) tracked and synced from your application alongside the subscription period.
+</Accordion>
+
+<Accordion title="**Automate revocation**">
+  Automatically remove customer deliverables and access (including Discord roles, active license keys, or software entitlements) whenever a subscription expires, is canceled, or fails payment retries.
+</Accordion>
+
+<Accordion title="**No deliverables**">
+  Bypass built-in file downloads and license keys if order fulfillment is handled externally. Blink will confirm the transaction and trigger order details directly to your system via Webhooks or the Blink API.
+</Accordion>
 
 ---
 
@@ -87,6 +124,14 @@ Variable products allow customers to choose options like size or color on one pa
   Recover lost sales automatically with a 3-step abandoned checkout flow. When a customer drops off, we send a series of high-converting emails to bring them back complete with built-in incentives. The second and third emails include a discount to nudge them over the line.
 </Accordion>
 
+<Accordion title="Geo Pricing">
+  Dynamically adapt your product pricing to your customer's local purchasing power parity (PPP). When enabled, buyers in supported countries automatically see localized, optimized rates to boost international conversions without hurting margins in higher-income markets.
+</Accordion>
+
+<Accordion title="Upsells">
+  Maximize your average order value by presenting high-converting, one-click post-purchase or checkout offers. Toggle this off if you want this specific product to remain a standalone checkout experience with no additional upsell prompts shown to the buyer.
+</Accordion>
+
 <Accordion title="Bumps">
   Order bumps are a simple way to increase your checkout value. They appear right before the Pay button and let customers quickly add extras to their order with a single click.
 
@@ -95,10 +140,6 @@ Variable products allow customers to choose options like size or color on one pa
 
 <Accordion title="Visibility">
   Choose how you want your product to be discovered. You can make it visible on your storefront for anyone to browse, or keep it private and share it only via direct link.
-</Accordion>
-
-<Accordion title="Subscription Revocation">
-  For subscription products, you can enable the **"Revoke access on subscription end"** setting. When enabled, Blink automatically locks access to digital downloads, API keys, Entitlements (Feature Flags), Discord roles, and GitHub repositories when the subscription expires, cancels, or fails to renew.
 </Accordion>
 
 <Note>
