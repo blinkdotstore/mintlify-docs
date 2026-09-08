@@ -3549,7 +3549,7 @@
                   "type": "string"
                 },
                 "price": {
-                  "type": "integer"
+                  "type": "number"
                 },
                 "badge_title": {
                   "type": "string"
@@ -3608,7 +3608,7 @@
             "type": "string"
           },
           "price": {
-            "type": "integer"
+            "type": "number"
           },
           "badge_title": {
             "type": "string"
@@ -3641,7 +3641,7 @@
                 "type": "string"
               },
               "price": {
-                "type": "integer"
+                "type": "number"
               },
               "badge_title": {
                 "type": "string"
@@ -5238,7 +5238,7 @@
                 ]
               },
               "price": {
-                "type": "integer"
+                "type": "number"
               },
               "currency": {
                 "type": "string"
@@ -5295,7 +5295,7 @@
                       "type": "string"
                     },
                     "price": {
-                      "type": "integer"
+                      "type": "number"
                     },
                     "currency": {
                       "type": "string"
@@ -5383,7 +5383,7 @@
             "type": "string"
           },
           "price": {
-            "type": "integer"
+            "type": "number"
           },
           "status": {
             "type": "string"
@@ -5416,7 +5416,7 @@
                 },
                 "unit_amount": {
                   "type": "integer",
-                  "description": "The price per unit in cents"
+                  "description": "The price per unit in major units (e.g. 29.00 for $29.00)"
                 }
               }
             }
@@ -5470,7 +5470,7 @@
                   "type": "string"
                 },
                 "price": {
-                  "type": "integer"
+                  "type": "number"
                 },
                 "is_active": {
                   "type": "boolean"
@@ -5511,7 +5511,7 @@
             "type": "string"
           },
           "price": {
-            "type": "integer"
+            "type": "number"
           },
           "is_active": {
             "type": "boolean"
@@ -5538,7 +5538,7 @@
                 "type": "string"
               },
               "price": {
-                "type": "integer"
+                "type": "number"
               },
               "is_active": {
                 "type": "boolean"
@@ -5561,7 +5561,7 @@
             "type": "string"
           },
           "price": {
-            "type": "integer"
+            "type": "number"
           },
           "is_active": {
             "type": "boolean"
@@ -5633,7 +5633,7 @@
                   ]
                 },
                 "price": {
-                  "type": "integer"
+                  "type": "number"
                 },
                 "status": {
                   "type": "string"
@@ -5693,7 +5693,7 @@
                         "type": "string"
                       },
                       "price": {
-                        "type": "integer"
+                        "type": "number"
                       },
                       "is_active": {
                         "type": "boolean"
@@ -5761,7 +5761,7 @@
             ]
           },
           "price": {
-            "type": "integer"
+            "type": "number"
           },
           "description": {
             "type": "string"
@@ -5814,7 +5814,7 @@
                 },
                 "unit_amount": {
                   "type": "integer",
-                  "description": "The price per unit in cents"
+                  "description": "The price per unit in major units (e.g. 29.00 for $29.00)"
                 }
               }
             }
@@ -5972,7 +5972,7 @@
                     "type": "string"
                   },
                   "price": {
-                    "type": "integer"
+                    "type": "number"
                   },
                   "subscription_interval": {
                     "type": "string",

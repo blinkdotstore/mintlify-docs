@@ -3294,7 +3294,7 @@
                 },
                 "unit_amount": {
                   "type": "integer",
-                  "description": "The price per unit in cents"
+                  "description": "The price per unit in major units (e.g. 29.00 for $29.00)"
                 }
               }
             }
