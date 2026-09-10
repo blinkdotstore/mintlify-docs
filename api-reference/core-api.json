@@ -3053,7 +3053,7 @@
           "Deliverables"
         ],
         "summary": "Request presigned URL for large files",
-        "description": "Returns a temporary AWS S3 presigned URL that allows direct file uploads up to 500MB without hitting the Vercel payload limit. After successfully uploading to the provided `url`, you must call `POST /deliverables` with the returned `key` and `product_id` to finalize the attachment.",
+        "description": "Returns a temporary AWS S3 presigned URL that allows direct file uploads up to 500MB without hitting the Vercel payload limit. After successfully uploading to the provided `url`, you must call `POST /deliverables` with the returned `key` and `product_id` to finalize the attachment.\n\n### Important Note on Headers\nWhen you perform the `PUT` request to the returned S3 `url`, you **must** include the exact same `Content-Type` header that you specified in your initial request to this endpoint (e.g. `Content-Type: application/zip`). If the header is missing or does not match, AWS will reject the upload with a 403 Forbidden error.",
         "requestBody": {
           "required": true,
           "content": {
