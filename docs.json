@@ -240,7 +240,8 @@
                   "api-reference/deliverables/generate-download-url",
                   "api-reference/deliverables/get-deliverable",
                   "api-reference/deliverables/list-deliverables",
-                  "api-reference/deliverables/upload-a-deliverable"
+                  "api-reference/deliverables/upload-a-deliverable",
+                  "api-reference/deliverables/request-presigned-url"
                 ]
               },
               {
