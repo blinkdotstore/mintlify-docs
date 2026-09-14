@@ -478,7 +478,7 @@
           "License Keys"
         ],
         "summary": "Revoke a license key",
-        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key\u2019s status before revocation. Suitable when a license has been compromised or needs termination.",
+        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key’s status before revocation. Suitable when a license has been compromised or needs termination.",
         "parameters": [
           {
             "name": "id",
@@ -4101,6 +4101,19 @@
                           }
                         }
                       }
+                    }
+                  }
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "The currency of the order (e.g., usd, eur)"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "custom_data": {
+                      "type": "object",
+                      "description": "Custom data passed during checkout creation"
                     }
                   }
                 }

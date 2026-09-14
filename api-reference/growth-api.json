@@ -3114,6 +3114,19 @@
                       "type": "string"
                     }
                   }
+                },
+                "currency": {
+                  "type": "string",
+                  "description": "The currency of the order (e.g., usd, eur)"
+                },
+                "metadata": {
+                  "type": "object",
+                  "properties": {
+                    "custom_data": {
+                      "type": "object",
+                      "description": "Custom data passed during checkout creation"
+                    }
+                  }
                 }
               }
             }
