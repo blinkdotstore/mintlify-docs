@@ -2183,7 +2183,8 @@
         "properties": {
           "expires_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": " Can be `null` for lifetime licenses. **Note:** For subscription products, license keys will automatically be revoked when the subscription ends or is canceled, regardless of their expiration setting."
           },
           "activation_limit": {
             "type": "integer"
@@ -2277,7 +2278,8 @@
           },
           "expires_at": {
             "type": "string",
-            "format": "date-time"
+            "format": "date-time",
+            "description": " Can be `null` for lifetime licenses. **Note:** For subscription products, license keys will automatically be revoked when the subscription ends or is canceled, regardless of their expiration setting."
           },
           "created_at": {
             "type": "string",
