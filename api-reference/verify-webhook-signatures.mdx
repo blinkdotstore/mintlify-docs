@@ -16,18 +16,110 @@ When Blink sends a webhook to your server, it includes the following headers:
 
 ## How to Verify the Signature
 
-Blink uses HMAC with SHA-256 to sign webhook payloads. To verify the signature, you need the **Signing Secret** for your webhook endpoint (which you can find in the Blink dashboard or via the API).
+The easiest and most secure way to verify webhooks is by using the official Blink SDKs. The SDKs provide a single helper function `constructEvent` that automatically verifies the signature, prevents replay attacks, and parses the JSON payload for you.
 
-Follow these steps to verify the signature:
+### Example: Next.js (App Router)
 
+```typescript
+import { NextResponse } from 'next/server';
+import { webhooks } from '@blinkpayments/sdk';
+
+export async function POST(req: Request) {
+  const signatureHeader = req.headers.get('blink-signature');
+  const timestampHeader = req.headers.get('blink-timestamp');
+  const webhookSecret = process.env.BLINK_WEBHOOK_SECRET!;
+
+  const rawBody = await req.text();
+
+  try {
+    // This securely verifies the signature and parses the JSON payload.
+    // It will throw an error if the signature is invalid or the timestamp is too old.
+    const event = webhooks.constructEvent(
+      rawBody, 
+      signatureHeader, 
+      timestampHeader, 
+      webhookSecret
+    );
+    
+    console.log('✅ Verified Event:', event.event);
+    return NextResponse.json({ received: true });
+    
+  } catch (error: any) {
+    console.error('❌ Webhook verification failed:', error.message);
+    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
+  }
+}
+```
+
+### Example: Python (FastAPI)
+
+```python
+from fastapi import FastAPI, Request, HTTPException
+from blink_api_client.webhooks import construct_event, InvalidSignatureError, ToleranceError
+import os
+
+app = FastAPI()
+
+@app.post("/webhook")
+async def webhook(request: Request):
+    signature_header = request.headers.get('blink-signature')
+    timestamp_header = request.headers.get('blink-timestamp')
+    webhook_secret = os.environ.get("BLINK_WEBHOOK_SECRET")
+    
+    raw_body = await request.body()
+    
+    try:
+        # Securely verify and parse the webhook
+        event = construct_event(
+            payload=raw_body.decode('utf-8'),
+            signature_header=signature_header,
+            timestamp_header=timestamp_header,
+            secret=webhook_secret
+        )
+        
+        print(f"✅ Verified Event: {event.get('event')}")
+        return {"received": True}
+        
+    except (InvalidSignatureError, ToleranceError) as e:
+        print(f"❌ Webhook verification failed: {str(e)}")
+        raise HTTPException(status_code=401, detail="Invalid signature")
+```
+
+## Replay Attacks
+
+As a best practice to prevent replay attacks, the SDK automatically checks that the `Blink-Timestamp` is within a reasonable tolerance (5 minutes) of your server's current time. If it is older, it throws a `ToleranceError`.
+
+## Test vs Live Webhooks
+
+<Warning>
+**Security Best Practice:** A cryptographically verified webhook only proves that the payload was sent by Blink. It does **not** prove that the customer actually paid real money!
+
+Blink sends webhooks for both **Test** (simulated) purchases and **Live** (real) purchases. An attacker could use a test card on your storefront checkout to trigger a perfectly valid, signed webhook.
+
+To avoid accidentally giving away your product for free, you must always explicitly check the `mode` parameter in the webhook JSON payload:
+
+```json
+{
+  "event": "order.paid",
+  "mode": "live",
+  // ...
+}
+```
+
+If your integration is in production, you should ignore or drop any webhooks where `mode === 'test'`.
+</Warning>
+
+## Manual Verification (Without SDK)
+
+If you are using a language without an official Blink SDK, you can verify the signature manually. Blink uses HMAC with SHA-256 to sign webhook payloads. 
+
+Follow these steps:
 1. **Extract the timestamp and signature** from the headers.
 2. **Prepare the signed payload string** by concatenating the timestamp, a dot (`.`), and the raw JSON request body: `${timestamp}.${rawBody}`.
 3. **Compute the expected HMAC signature** using SHA-256, your signing secret, and the signed payload string.
 4. **Compare the signatures**. If your computed signature matches the one in the `Blink-Signature` header (stripping the `v1=` prefix), the webhook is valid!
 
-### Example: Node.js (Express)
-
-Here is a complete example of how to verify a webhook signature in a Node.js Express application:
+### Example: Node.js (Express) without SDK
 
 ```javascript
 const express = require('express');
@@ -61,77 +153,12 @@ app.post('/webhook', express.raw({ type: 'application/json' }), (req, res) => {
   if (crypto.timingSafeEqual(Buffer.from(signature), Buffer.from(expectedSignature))) {
     console.log('✅ Webhook signature verified!');
     
-    // Parse the body and process the event
     const event = JSON.parse(req.body.toString('utf8'));
-    console.log(`Received event: ${event.event}`);
-    
     res.status(200).send('OK');
   } else {
-    console.error('❌ Invalid webhook signature');
     res.status(401).send('Invalid signature');
   }
 });
 
 app.listen(3000, () => console.log('Listening on port 3000'));
 ```
-
-### Example: Next.js (App Router)
-
-If you are using Next.js App Router, you can verify webhooks like this:
-
-```typescript
-import { NextResponse } from 'next/server';
-import crypto from 'crypto';
-
-export async function POST(req: Request) {
-  const signatureHeader = req.headers.get('blink-signature');
-  const timestamp = req.headers.get('blink-timestamp');
-  const webhookSecret = process.env.BLINK_WEBHOOK_SECRET!;
-
-  if (!signatureHeader || !timestamp) {
-    return NextResponse.json({ error: 'Missing headers' }, { status: 400 });
-  }
-
-  const signature = signatureHeader.replace('v1=', '');
-  const rawBody = await req.text();
-  const payloadToSign = `${timestamp}.${rawBody}`;
-
-  const expectedSignature = crypto
-    .createHmac('sha256', webhookSecret)
-    .update(payloadToSign)
-    .digest('hex');
-
-  if (signature !== expectedSignature) {
-    return NextResponse.json({ error: 'Invalid signature' }, { status: 401 });
-  }
-
-  const event = JSON.parse(rawBody);
-  console.log('✅ Verified Event:', event.event);
-
-  return NextResponse.json({ received: true });
-}
-```
-
-## Replay Attacks
-
-As a best practice to prevent replay attacks, you should check that the `Blink-Timestamp` is within a reasonable tolerance (e.g., 5 minutes) of your server's current time.
-
-## Test vs Live Webhooks
-
-<Warning>
-**Security Best Practice:** A cryptographically verified webhook only proves that the payload was sent by Blink. It does **not** prove that the customer actually paid real money!
-
-Blink sends webhooks for both **Test** (simulated) purchases and **Live** (real) purchases. An attacker could use a test card on your storefront checkout to trigger a perfectly valid, signed webhook.
-
-To avoid accidentally giving away your product for free, you must always explicitly check the `mode` parameter in the webhook JSON payload:
-
-```json
-{
-  "event": "order.paid",
-  "mode": "live",
-  // ...
-}
-```
-
-If your integration is in production, you should ignore or drop any webhooks where `mode === 'test'`.
-</Warning>
