@@ -129,6 +129,7 @@
         "tab": "API",
         "pages": [
           "api-reference/introduction",
+          "api-reference/sdks",
           "api-reference/test-mode",
           "api-reference/ai-agent-rules",
           "api-reference/ai-integration",

@@ -1,0 +1,74 @@
+## Official SDKs (Beta)
+
+Use our newly launched, fully typed SDKs to integrate with the Blink API flawlessly in minutes. 
+
+Our SDKs give you built-in autocomplete (IntelliSense) and prevent annoying typo-related errors when building AI wrappers, agentic payments, or typical web apps.
+
+> **Note:** The SDKs are currently in **public beta**. Install the packages directly below to try them out before the stable `1.0` release.
+
+### Installation
+
+Choose your language below to install the SDK into your project.
+
+<CodeGroup>
+
+```bash TypeScript
+npm install @blinkpayments/sdk
+```
+
+```bash Python
+pip install blink-api-client
+```
+
+</CodeGroup>
+
+### Authentication
+
+Create an **Organization Secret Key** from your Blink Dashboard, then initialize the client.
+
+<CodeGroup>
+
+```typescript TypeScript
+import { OpenAPI, CheckoutsService } from "@blinkpayments/sdk";
+
+// 1. Set your base API URL and Secret Key
+OpenAPI.BASE = "https://api.blink.store/v1";
+OpenAPI.TOKEN = process.env.BLINK_SECRET_KEY; // e.g., sk_...
+
+// 2. Make your first request!
+async function createCheckout() {
+    const checkout = await CheckoutsService.createCheckout({
+        productId: "prod_123abc",
+        customerEmail: "ai-agent@example.com"
+    });
+    console.log(checkout.url);
+}
+```
+
+```python Python
+from blink_api_client import AuthenticatedClient
+from blink_api_client.api.checkouts import post_checkouts
+from blink_api_client.models import CheckoutCreateRequest
+
+# 1. Initialize the authenticated client with your Secret Key
+client = AuthenticatedClient(
+    base_url="https://api.blink.store/v1",
+    token="sk_your_secret_key"
+)
+
+# 2. Make your first request!
+def generate_payment_link():
+    request_body = CheckoutCreateRequest(
+        product_id="prod_123abc",
+        customer_email="ai-agent@example.com"
+    )
+    
+    checkout = post_checkouts.sync(
+        client=client, 
+        body=request_body
+    )
+    
+    print(checkout.url)
+```
+
+</CodeGroup>
