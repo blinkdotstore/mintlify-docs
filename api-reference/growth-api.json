@@ -4290,9 +4290,13 @@
               "pricing_model": {
                 "type": "string",
                 "enum": [
-                  "one_time",
-                  "subscription",
-                  "pay_what_you_want"
+                  "standard",
+                  "free",
+                  "pay_what_you_want",
+                  "package",
+                  "graduated",
+                  "volume",
+                  "metered"
                 ]
               },
               "price": {
@@ -4650,9 +4654,13 @@
                 "pricing_model": {
                   "type": "string",
                   "enum": [
-                    "one_time",
-                    "subscription",
-                    "pay_what_you_want"
+                    "standard",
+                    "free",
+                    "pay_what_you_want",
+                    "package",
+                    "graduated",
+                    "volume",
+                    "metered"
                   ]
                 },
                 "price": {
@@ -4742,10 +4750,13 @@
           "pricing_model": {
             "type": "string",
             "enum": [
-              "one_time",
-              "subscription",
+              "standard",
+              "free",
               "pay_what_you_want",
-              "tiered"
+              "package",
+              "graduated",
+              "volume",
+              "metered"
             ]
           },
           "price": {
@@ -4914,9 +4925,13 @@
                   "pricing_model": {
                     "type": "string",
                     "enum": [
-                      "one_time",
-                      "subscription",
-                      "pay_what_you_want"
+                      "standard",
+                      "free",
+                      "pay_what_you_want",
+                      "package",
+                      "graduated",
+                      "volume",
+                      "metered"
                     ]
                   },
                   "subscription_interval": {
