@@ -143,13 +143,6 @@
             ]
           },
           {
-            "group": "Guides",
-            "pages": [
-              "seat-based-billing",
-              "metered-billing-ai"
-            ]
-          },
-          {
             "group": "Core",
             "pages": [
               {
@@ -215,6 +208,7 @@
               {
                 "group": "Subscriptions",
                 "pages": [
+                  "api-reference/subscriptions/seat-based-billing",
                   "api-reference/subscriptions/create-a-subscription-manually",
                   "api-reference/subscriptions/list-subscriptions",
                   "api-reference/subscriptions/preview-a-subscription-swap",
@@ -235,6 +229,7 @@
               {
                 "group": "Meters",
                 "pages": [
+                  "api-reference/meters/metered-billing-ai",
                   "api-reference/meters/create-a-new-meter",
                   "api-reference/meters/list-all-meters",
                   "api-reference/meters/list-usage-records",
