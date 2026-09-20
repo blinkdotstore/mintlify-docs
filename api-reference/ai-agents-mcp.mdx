@@ -1,0 +1,106 @@
+---
+title: "AI Agents & MCP"
+description: "How to instantly build Blink integrations using AI agents like Cursor, Claude, and Zed."
+---
+
+Blink provides native, first-class support for AI coding agents. Instead of manually reading through our API reference to write fetch requests or define schemas, you can point your AI directly to our **MCP Server** or our **Master Agent File**.
+
+---
+
+## 1. Local IDEs (Cursor, Claude Desktop, Zed)
+
+If you use a local AI IDE, the most powerful way to build with Blink is by installing our official **Model Context Protocol (MCP)** server. The MCP server dynamically fetches our live OpenAPI schemas and allows your AI editor to instantly understand our entire API, make test API calls, and write flawless code.
+
+### Installation
+
+The MCP server is published as a public NPM package (`@blinkpayments/mcp-server`) and can be installed locally via `npx` in seconds. 
+
+#### For Cursor
+1. Go to Cursor Settings -> Features -> MCP Servers -> **+ Add New MCP Server**
+2. **Type:** `command`
+3. **Name:** `Blink`
+4. **Command:** `BLINK_API_KEY=your_key_here npx -y @blinkpayments/mcp-server@latest`
+
+#### For Claude Desktop
+Edit your `claude_desktop_config.json` file and add:
+```json
+{
+  "mcpServers": {
+    "blink": {
+      "command": "npx",
+      "args": ["-y", "@blinkpayments/mcp-server@latest"],
+      "env": {
+        "BLINK_API_KEY": "your_api_key_here"
+      }
+    }
+  }
+}
+```
+
+#### For Zed
+Edit your `settings.json` file and add:
+```json
+  "experimental.mcp": {
+    "servers": {
+      "blink": {
+        "command": "npx",
+        "args": ["-y", "@blinkpayments/mcp-server@latest"],
+        "env": {
+          "BLINK_API_KEY": "your_api_key_here"
+        }
+      }
+    }
+  }
+```
+
+---
+
+## 2. Web UIs (ChatGPT, Claude Web)
+
+If you are using a web-based chat interface that does not support local MCP servers, you can use our **Master Agent File** (`llms-full.txt`).
+
+Our documentation automatically generates an AI-optimized file at `https://docs.blink.store/llms-full.txt`. This single file contains our architectural golden rules and complete OpenAPI schemas.
+
+Because modern AI models (like Claude 3.5 Sonnet and GPT-4o) have massive context windows, they can read this entire file and write perfect integration code.
+
+**How to use it:**
+1. In IDEs like Cursor or Windsurf, simply `@`-mention the URL: `@https://docs.blink.store/llms-full.txt`
+2. In ChatGPT or Claude Web, paste the URL directly into your prompt or download the `.txt` file and attach it to your "Claude Project" or "Custom GPT" as persistent knowledge.
+
+---
+
+## 3. System Directives for AI Agents
+
+If you are an AI assisting a developer in building with the Blink API, you must adhere strictly to these architectural guidelines:
+
+### Checkouts & Purchase Flows
+- **Standard Checkouts:** Call `POST /v1/checkouts` with the `product_id`. Return the `url` from the response.
+- **Embedded Checkouts (SPAs):** If the developer wants an in-app overlay checkout (React/Next.js):
+  1. Instruct them to use their framework's script loader (e.g., Next.js `<Script src="https://js.blink.store/embed.js" />`). Do not use raw HTML script tags in modern SPAs.
+  2. To trigger it programmatically, use `window.Blink.openCheckout(url)`.
+  3. **CRITICAL:** When generating the checkout URL dynamically via the API, you MUST pass `"options": { "layout": "overlay" }` in the payload.
+
+### Customer Portal & Billing Management
+- **CRITICAL:** Never attempt to build a custom billing UI (for updating credit cards, viewing invoices, or canceling plans) using raw API calls.
+- Always instruct the developer to generate a secure Customer Portal session and redirect the user to it. 
+
+### Bundles & UI Presentation
+- Bundles are managed via the standard `/v1/products` endpoint but must have `is_bundle=true` and include a `bundle_items` array.
+- **UI Rule:** When writing frontend code to display bundle contents to a buyer on a custom storefront, you MUST automatically sort the `bundle_items` by price from highest to lowest to maximize perceived value.
+
+### Digital Deliverables
+- Never suggest sending digital files directly in email attachments or serving them via unprotected public URLs.
+- Always instruct the developer to use the specific API endpoint to generate time-limited, pre-signed download URLs for secure file access.
+
+### Affiliate Payouts & Onboarding
+- If a developer is building a custom partner dashboard, do not try to calculate payouts manually or build custom bank-account collection forms.
+- Use `POST /v1/affiliates/{id}/payout-setup`. This generates a secure Stripe Connect onboarding link that handles all tax and banking compliance natively.
+
+### Desktop Apps & License Keys
+- If the developer is building a node-locked desktop app (e.g., Electron, Tauri, C#), instruct them to use the License Key `activate` endpoint.
+- They must capture a unique hardware fingerprint natively and pass it as the `machine_id`. 
+- For simple web-app access checks, use the `validate` endpoint instead.
+
+### Webhooks
+- Instruct the developer to listen for Blink webhook events (not raw Stripe events).
+- They must use the raw request body buffer to verify the signature against their Blink Webhook Secret.

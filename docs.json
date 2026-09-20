@@ -128,11 +128,20 @@
       {
         "tab": "API",
         "pages": [
-          "api-reference/introduction",
-          "api-reference/sdks",
-          "api-reference/test-mode",
-          "api-reference/ai-agent-rules",
-          "api-reference/ai-integration",
+          {
+            "group": "Getting Started",
+            "pages": [
+              "api-reference/introduction",
+              "api-reference/test-mode"
+            ]
+          },
+          {
+            "group": "Developer Tools",
+            "pages": [
+              "api-reference/sdks",
+              "api-reference/ai-agents-mcp"
+            ]
+          },
           {
             "group": "Guides",
             "pages": [
