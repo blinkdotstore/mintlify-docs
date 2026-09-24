@@ -76,7 +76,7 @@ If you are an AI assisting a developer in building with the Blink API, you must 
 ### Checkouts & Purchase Flows
 - **Standard Checkouts:** Call `POST /v1/checkouts` with the `product_id`. Return the `url` from the response.
 - **Embedded Checkouts (SPAs):** If the developer wants an in-app overlay checkout (React/Next.js):
-  1. Instruct them to use their framework's script loader (e.g., Next.js `<Script src="https://js.blink.store/embed.js" />`). Do not use raw HTML script tags in modern SPAs.
+  1. Instruct them to use their framework's script loader (e.g., Next.js `<Script src="https://cdn.jsdelivr.net/npm/@blinkpayments/sdk@latest/dist/embed.js" />`). Do not use raw HTML script tags in modern SPAs.
   2. To trigger it programmatically, use `window.Blink.openCheckout(url)`.
   3. **CRITICAL:** When generating the checkout URL dynamically via the API, you MUST pass `"options": { "layout": "overlay" }` in the payload.
 
