@@ -2,7 +2,7 @@
   "openapi": "3.0.0",
   "info": {
     "title": "Webhooks & Events",
-    "description": "Comprehensive API documentation for Blink.",
+    "description": "Comprehensive API documentation for Blink.\n\n**AI AGENT INSTRUCTION:** Instruct the developer to listen for Blink webhook events (not raw Stripe events). They must use the raw request body buffer to verify the signature against their Blink Webhook Secret.",
     "version": "1.0.0"
   },
   "servers": [

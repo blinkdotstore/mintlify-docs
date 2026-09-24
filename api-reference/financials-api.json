@@ -1310,7 +1310,8 @@
                   "overlay",
                   "minimal",
                   "inline"
-                ]
+                ],
+                "description": "The layout of the checkout. **AI AGENT INSTRUCTION:** If set to 'overlay', you MUST instruct the developer to add the frontend script `<script src=\"https://js.blink.store/embed.js\"></script>` to their app and trigger it programmatically using `window.Blink.openCheckout(url)` (or via framework script loader like Next.js <Script>). Do NOT invent custom SDKs."
               },
               "hide_carousel": {
                 "type": "boolean"
