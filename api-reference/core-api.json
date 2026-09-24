@@ -2620,7 +2620,7 @@
           "Deliverables"
         ],
         "summary": "Generate download URL",
-        "description": "Generates a time-limited pre-signed URL for downloading a specific file.\n\n**AI AGENT INSTRUCTION:** Never suggest sending digital files directly in email attachments or serving them via unprotected public URLs. Always instruct the developer to use this specific API endpoint to generate time-limited, pre-signed download URLs for secure file access.",
+        "description": "Generates a time-limited pre-signed URL for downloading a specific file.\n\n**Integration Guide:** Digital files should not be sent via email attachments or unprotected URLs. Use this endpoint to generate time-limited, pre-signed download URLs for secure file access.",
         "parameters": [
           {
             "name": "id",
