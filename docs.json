@@ -446,6 +446,20 @@
                 ]
               }
             ]
+          },
+          {
+            "group": "OAuth 2.0",
+            "pages": [
+              "api-reference/oauth-overview",
+              {
+                "group": "Endpoints",
+                "pages": [
+                  "api-reference/oauth/exchange-token",
+                  "api-reference/oauth/revoke-token",
+                  "api-reference/oauth/retrieve-connected-store"
+                ]
+              }
+            ]
           }
         ],
         "icon": "code"
@@ -476,7 +490,8 @@
     "api-reference/core-api.json",
     "api-reference/financials-api.json",
     "api-reference/growth-api.json",
-    "api-reference/webhooks-api.json"
+    "api-reference/webhooks-api.json",
+    "api-reference/oauth-api.json"
   ],
   "appearance": {
     "strict": true

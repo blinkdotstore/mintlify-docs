@@ -1,0 +1,379 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "OAuth 2.0 & Connect API",
+    "description": "OAuth 2.0 Authorization Code flow, token management, and connected store introspection endpoints for third-party Blink integrations.",
+    "version": "1.0.0"
+  },
+  "servers": [
+    {
+      "url": "https://app.blink.store"
+    }
+  ],
+  "paths": {
+    "/api/oauth/token": {
+      "post": {
+        "summary": "Exchange Authorization Code",
+        "description": "Exchanges a short-lived authorization `code` (obtained from `/oauth/authorize`) or a `refresh_token` for a store-scoped `access_token` (`blnk_live_...` or `blnk_test_...`).\n\nSupports both `application/json` and `application/x-www-form-urlencoded` request bodies, as well as HTTP Basic Authentication (`Authorization: Basic base64(client_id:client_secret)`) and PKCE (`code_verifier`).\n\n**Supported Grant Types:**\n- `authorization_code`: Exchange a 5-minute single-use `code` for an `access_token` and `refresh_token`.\n- `refresh_token`: Rotate an existing `refresh_token` for a new `access_token` and `refresh_token` pair.",
+        "tags": [
+          "OAuth 2.0"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthTokenRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthTokenRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successfully issued or rotated OAuth access token.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthTokenResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request or invalid/expired authorization code (`invalid_request`, `invalid_grant`, `unsupported_grant_type`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthErrorResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid client credentials (`invalid_client`).",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/oauth/revoke": {
+      "post": {
+        "summary": "Revoke OAuth Token",
+        "description": "Revokes an active OAuth `access_token` (`blnk_live_...` / `blnk_test_...`) or `refresh_token` (`blnk_rt_...`) in compliance with RFC 7009.\n\nOnce revoked, the token is immediately deleted and can no longer authenticate requests to `/api/v1/*`.",
+        "tags": [
+          "OAuth 2.0"
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthRevokeRequest"
+              }
+            },
+            "application/x-www-form-urlencoded": {
+              "schema": {
+                "$ref": "#/components/schemas/OAuthRevokeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Token revoked successfully.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "revoked": {
+                      "type": "boolean",
+                      "example": true
+                    }
+                  }
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing required `token` parameter.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OAuthErrorResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/v1/me": {
+      "get": {
+        "summary": "Retrieve Connected Store",
+        "description": "Returns the profile, storefront domain, currency, and active token scopes for the store authenticated by the `Authorization: Bearer <access_token>` header.\n\nPartner platforms and automation tools (such as Zapier, Make, or custom OAuth integrations) should call this endpoint immediately after completing the OAuth token exchange to verify the connection and retrieve the seller's store metadata.",
+        "tags": [
+          "OAuth 2.0"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Connected store details and token scope metadata.",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ConnectedStoreResponse"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing, invalid, or revoked Bearer token."
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "OAuth 2.0 `access_token` (`blnk_live_...` or `blnk_test_...`) or Store Secret Key."
+      }
+    },
+    "schemas": {
+      "OAuthTokenRequest": {
+        "type": "object",
+        "required": [
+          "grant_type",
+          "client_id"
+        ],
+        "properties": {
+          "grant_type": {
+            "type": "string",
+            "enum": [
+              "authorization_code",
+              "refresh_token"
+            ],
+            "description": "Must be `authorization_code` when exchanging a code from `/oauth/authorize`, or `refresh_token` when rotating tokens.",
+            "example": "authorization_code"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Your OAuth application's Client ID (`blnk_client_...`).",
+            "example": "blnk_client_c35awnC5stJvE1aMvZYHMBpH"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "Your OAuth application's Client Secret (`blnk_secret_...`). Required unless using PKCE without a client secret.",
+            "example": "blnk_secret_Yje9xK2mPqL8vN4rT6wZ1aB3cD5eF7gH9iJ0kL"
+          },
+          "code": {
+            "type": "string",
+            "description": "The 5-minute single-use authorization code (`blnk_code_...`) received at your `redirect_uri`. Required when `grant_type=authorization_code`.",
+            "example": "blnk_code_9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c"
+          },
+          "redirect_uri": {
+            "type": "string",
+            "description": "The exact `redirect_uri` used during the `/oauth/authorize` request.",
+            "example": "https://partner.com/oauth/blink/callback"
+          },
+          "code_verifier": {
+            "type": "string",
+            "description": "Optional PKCE code verifier matching the `code_challenge` sent to `/oauth/authorize`."
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "The refresh token (`blnk_rt_...`) to rotate. Required when `grant_type=refresh_token`."
+          }
+        }
+      },
+      "OAuthTokenResponse": {
+        "type": "object",
+        "properties": {
+          "access_token": {
+            "type": "string",
+            "description": "The store-scoped Bearer token used to call `/api/v1/*` endpoints. Does not expire unless revoked or rotated.",
+            "example": "blnk_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0"
+          },
+          "token_type": {
+            "type": "string",
+            "example": "Bearer"
+          },
+          "refresh_token": {
+            "type": "string",
+            "description": "Refresh token (`blnk_rt_...`) that can be used with `grant_type=refresh_token` to rotate the access token.",
+            "example": "blnk_rt_z9y8x7w6v5u4t3s2r1q0p9o8n7m6l5k4j3i2h1g0"
+          },
+          "scope": {
+            "type": "string",
+            "description": "Space-separated list of granted scopes (or `*` for full store access).",
+            "example": "products:read orders:read webhooks:write"
+          },
+          "store": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "54ba8e0a-ba35-4609-902e-0ec0b236ac81"
+              },
+              "name": {
+                "type": "string",
+                "example": "Acme Digital Store"
+              },
+              "subdomain": {
+                "type": "string",
+                "example": "acme"
+              },
+              "custom_domain": {
+                "type": "string",
+                "nullable": true,
+                "example": "store.acme.com"
+              },
+              "currency": {
+                "type": "string",
+                "example": "usd"
+              },
+              "mode": {
+                "type": "string",
+                "enum": [
+                  "live",
+                  "test"
+                ],
+                "example": "live"
+              }
+            }
+          }
+        }
+      },
+      "OAuthRevokeRequest": {
+        "type": "object",
+        "required": [
+          "token"
+        ],
+        "properties": {
+          "token": {
+            "type": "string",
+            "description": "The `access_token` (`blnk_live_...`) or `refresh_token` (`blnk_rt_...`) to revoke.",
+            "example": "blnk_live_a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8s9t0"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Optional OAuth application `client_id`.",
+            "example": "blnk_client_c35awnC5stJvE1aMvZYHMBpH"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "Optional OAuth application `client_secret`."
+          }
+        }
+      },
+      "ConnectedStoreResponse": {
+        "type": "object",
+        "properties": {
+          "data": {
+            "type": "object",
+            "properties": {
+              "id": {
+                "type": "string",
+                "format": "uuid",
+                "example": "54ba8e0a-ba35-4609-902e-0ec0b236ac81"
+              },
+              "name": {
+                "type": "string",
+                "example": "Acme Digital Store"
+              },
+              "subdomain": {
+                "type": "string",
+                "example": "acme"
+              },
+              "custom_domain": {
+                "type": "string",
+                "nullable": true,
+                "example": null
+              },
+              "storefront_url": {
+                "type": "string",
+                "example": "https://acme.blink.store"
+              },
+              "currency": {
+                "type": "string",
+                "example": "usd"
+              },
+              "country": {
+                "type": "string",
+                "example": "us"
+              },
+              "approval_status": {
+                "type": "string",
+                "example": "approved"
+              },
+              "created_at": {
+                "type": "string",
+                "format": "date-time"
+              },
+              "auth": {
+                "type": "object",
+                "properties": {
+                  "mode": {
+                    "type": "string",
+                    "enum": [
+                      "live",
+                      "test"
+                    ],
+                    "example": "live"
+                  },
+                  "token_type": {
+                    "type": "string",
+                    "example": "oauth"
+                  },
+                  "scopes": {
+                    "type": "array",
+                    "items": {
+                      "type": "string"
+                    },
+                    "example": [
+                      "products:read",
+                      "orders:read",
+                      "webhooks:write"
+                    ]
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "OAuthErrorResponse": {
+        "type": "object",
+        "properties": {
+          "error": {
+            "type": "string",
+            "example": "invalid_grant"
+          },
+          "error_description": {
+            "type": "string",
+            "example": "Authorization code has expired"
+          }
+        }
+      }
+    }
+  }
+}
