@@ -67,7 +67,7 @@ Blink dispatches purchase and subscription webhooks in a deterministic sequence:
 |---|---|
 | `order.created` | Fired when a new order is placed. Includes `custom_data` if provided at checkout. |
 | `order.paid` | Fired when payment is confirmed on an order. Includes `custom_data` if provided at checkout. |
-| `order.refunded` | Fired when an order is refunded (full or partial). |
+| `order.refunded` | Fired when an order is refunded (full, partial, or via automated pre-dispute prevention, which includes `dispute_prevented: true` in `data`). |
 
 ## Checkouts
 | Event Name | Description |
@@ -190,9 +190,13 @@ All `subscription.*` events include the Blink `customer_id`, `current_period_end
 ## Disputes
 | Event Name | Description |
 |---|---|
-| `dispute.created` | Fired when a dispute is opened. |
+| `dispute.created` | Fired when a formal chargeback dispute is opened. |
 | `dispute.won` | Fired when a dispute is won. |
 | `dispute.lost` | Fired when a dispute is lost. |
+
+<Info>
+**Automated Dispute Prevention:** When Blink's pre-dispute network (Verifi RDR / Ethoca) intercepts and auto-refunds an inquiry before it becomes a formal chargeback, Blink dispatches `order.refunded` with `data.dispute_prevented: true` instead of `dispute.created`. Blink absorbs the \$15.00 dispute prevention fee and automatically revokes associated license keys, API keys, and active subscriptions.
+</Info>
 
 ## Payouts
 | Event Name | Description |

@@ -51,14 +51,25 @@ A 2% platform fee is applied to each transaction to support affiliate tracking a
 
 ---
 
-## Refunds and chargebacks
+## Refunds, dispute prevention, and chargebacks
 
-You have the flexibility to issue full or partial refunds to your customers. Please note that original transaction fees are not recoverable, as these are retained by the card networks and payment providers.
+You have the flexibility to issue full or partial refunds to your customers at any time. Please note that original transaction processing fees are not recoverable, as these are retained by the card networks and payment providers.
 
-To proactively protect you from \$15 dispute fees, we may issue a refund within 30-60 days of a purchase if we identify a high risk of a chargeback. This is a preventative measure designed solely to save you from unnecessary penalty fees.
+### Automated Dispute Prevention (Verifi RDR & Ethoca)
+
+Blink operates with automated **Pre-Dispute Prevention** powered by Visa (Verifi RDR) and Mastercard (Ethoca). When a customer contacts their bank to initiate a dispute, our network intercepts the pre-dispute inquiry in real time and automatically refunds the transaction **before** it escalates into an official chargeback.
+
+- **\$0 Dispute Fee for Sellers:** Blink **absorbs the \$15.00 dispute prevention fee** on your behalf. You are only deducted the refunded order amount and the original non-refundable payment processing fees.
+- **Dispute Ratio Protection:** Because the inquiry is resolved before becoming a formal chargeback, it **does not count toward your store’s dispute rate** (keeping your store safely below the 0.7% card network monitoring threshold).
+- **Dashboard & Payout Visibility:** Prevented disputes are marked in your dashboard as **`Refunded: Prevented Dispute`** (and `refunded (prevented_dispute)` in payout CSV exports), and you will receive an instant email notification whenever Blink intercepts a dispute for your store.
+- **Automatic Access Revocation:** Any license keys, API keys, or active subscriptions tied to the order are automatically revoked when a pre-dispute refund occurs.
+
+### Unprevented Chargebacks
+
+If a customer’s issuing bank does not participate in pre-dispute alert networks and files a formal chargeback directly (`Chargeback` / `Disputed`), card networks assess a **\$15.00 dispute fee** alongside the disputed order amount. If the dispute is won, the disputed funds are returned to your balance.
 
 <Info>
-  To maintain a healthy payment ecosystem, card networks enforce strict monitoring and penalties for accounts with elevated dispute rates (typically exceeding 0.7%). As your Merchant of Record, we take on the responsibility of managing this risk. We actively monitor transaction health and implement proactive measures to stay well below these industry thresholds, ensuring your store remains in good standing
+  To maintain a healthy payment ecosystem, card networks enforce strict monitoring and penalties for accounts with elevated dispute rates (typically exceeding 0.7%). As your Merchant of Record, we take on the responsibility of managing this risk through real-time Dispute Prevention and proactive monitoring to ensure your store remains in good standing.
 </Info>
 
 ---
