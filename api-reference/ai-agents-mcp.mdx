@@ -74,15 +74,25 @@ Because modern AI models (like Claude 3.5 Sonnet and GPT-4o) have massive contex
 If you are an AI assisting a developer in building with the Blink API, you must adhere strictly to these architectural guidelines:
 
 ### Checkouts & Purchase Flows
-- **Standard Checkouts:** Call `POST /v1/checkouts` with the `product_id`. Return the `url` from the response.
+- **Standard Checkouts:** Call `POST /v1/checkouts` with the `product_id` (and optional `variant_id`). Return the `url` from the response (`response.data.url`).
+- **Pre-filling & Locking Buyer Email:** When creating a checkout for an authenticated user, pass `customer_email: "user@example.com"` and `lock_email: true` so the buyer cannot change the email address during checkout.
+- **Attaching Custom Data (`custom_data`):** Pass `"custom_data": { "user_id": "..." }` in `POST /v1/checkouts` to link the purchase to your application's internal user or organization ID. Blink persists `custom_data` on both the Order and Subscription and echoes it back verbatim at `event.data.custom_data` in `checkout.created`, `order.created`, `order.paid`, and all `subscription.*` webhooks.
+- **Success URL Placeholders (`success_url`):** You can include `{CHECKOUT_SESSION_ID}`, `{ORDER_ID}`, `{SUBSCRIPTION_ID}`, and `{PAYMENT_INTENT_ID}` in `success_url` (e.g., `https://yourapp.com/billing?checkout=success&session_id={CHECKOUT_SESSION_ID}&order_id={ORDER_ID}&subscription_id={SUBSCRIPTION_ID}`). Blink automatically replaces these placeholders before redirecting the buyer.
 - **Embedded Checkouts (SPAs):** If the developer wants an in-app overlay checkout (React/Next.js):
   1. Instruct them to use their framework's script loader (e.g., Next.js `<Script src="https://cdn.jsdelivr.net/npm/@blinkpayments/sdk@latest/dist/embed.js" />`). Do not use raw HTML script tags in modern SPAs.
   2. To trigger it programmatically, use `window.Blink.openCheckout(url)`.
   3. **CRITICAL:** When generating the checkout URL dynamically via the API, you MUST pass `"options": { "layout": "overlay" }` in the payload.
 
+### Subscriptions & Plan Swaps
+- **Managing Subscriptions via API (`PATCH /v1/subscriptions/{id}`):**
+  - Use `action: "cancel"` to schedule cancellation at the end of the billing period (`cancel_at_period_end: true`, `status` remains `"active"` until `current_period_end`).
+  - Use `action: "cancel_immediately"` to terminate immediately (`status: "canceled"`, `cancel_at_period_end: false`, and `current_period_end` is immediately updated to the cancellation timestamp).
+  - Use `action: "resume"` to reverse a pending period-end cancellation (`cancel_at_period_end: false`).
+  - Use `action: "swap"` with `variant_id` (or `product_id`) to upgrade or downgrade a subscription immediately with automatic prorations. You can preview the prorated charge first via `GET /v1/subscriptions/{id}/preview-swap?variant_id=...`.
+
 ### Customer Portal & Billing Management
-- **CRITICAL:** Never attempt to build a custom billing UI (for updating credit cards, viewing invoices, or canceling plans) using raw API calls.
-- Always instruct the developer to generate a secure Customer Portal session and redirect the user to it. 
+- **CRITICAL:** Never attempt to build a custom credit-card collection or raw card-update form.
+- Instruct the developer to generate a secure Customer Portal session (`POST /v1/customers/{id}/portal` or `POST /v1/customer-portal/session`) and redirect the user to it for self-serve payment method updates, invoice downloads, and deliverables access.
 
 ### Bundles & UI Presentation
 - Bundles are managed via the standard `/v1/products` endpoint but must have `is_bundle=true` and include a `bundle_items` array.
@@ -101,6 +111,9 @@ If you are an AI assisting a developer in building with the Blink API, you must 
 - They must capture a unique hardware fingerprint natively and pass it as the `machine_id`. 
 - For simple web-app access checks, use the `validate` endpoint instead.
 
-### Webhooks
+### Webhooks & Idempotency
 - Instruct the developer to listen for Blink webhook events (not raw Stripe events).
-- They must use the raw request body buffer to verify the signature against their Blink Webhook Secret.
+- Always verify the `Blink-Signature` and `Blink-Timestamp` headers using the raw request body buffer against the Blink Webhook Secret.
+- **Idempotency:** Deduplicate incoming webhooks using the top-level `event.id` (`evt_...`) or the `Blink-Event-Id` header. Only record `event.id` as processed **after** the webhook handler completes without error so retries of failed deliveries are not skipped.
+- **Test vs. Live Mode:** Always check `event.data.is_test === false` before provisioning production access.
+- **Event Sequence & State:** On initial subscription purchase, Blink dispatches `order.created` → `order.paid` → `subscription.created`. Period-end cancellations emit `subscription.canceled` (with `cancel_at_period_end: true`), resumptions emit `subscription.uncanceled`, and plan swaps emit `subscription.upgraded`.

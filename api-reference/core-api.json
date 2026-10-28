@@ -101,7 +101,7 @@
           "Checkouts"
         ],
         "summary": "Create a new checkout session",
-        "description": "Initializes a new Blink checkout session for a product and returns the session URL. Can be customized with discounts, affiliate codes, and display preferences.\n\n**Usage:** This endpoint is crucial for starting a payment flow and redirecting customers to a payment page.",
+        "description": "Initializes a new Blink checkout session for a product and returns the checkout `url` and session `id`. Supports pre-filling and locking the buyer email (`customer_email` + `lock_email: true`), attaching arbitrary JSON (`custom_data`), applying discounts or affiliate codes, and dynamic redirect URL placeholders (`{CHECKOUT_SESSION_ID}`, `{ORDER_ID}`, `{SUBSCRIPTION_ID}`, `{PAYMENT_INTENT_ID}`).",
         "requestBody": {
           "content": {
             "application/json": {
@@ -478,7 +478,7 @@
           "License Keys"
         ],
         "summary": "Revoke a license key",
-        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key’s status before revocation. Suitable when a license has been compromised or needs termination.",
+        "description": "Permanently disable a license key to prevent further use. Requires `x-store-id` for verification and checks the key\u2019s status before revocation. Suitable when a license has been compromised or needs termination.",
         "parameters": [
           {
             "name": "id",
@@ -1562,7 +1562,7 @@
           "Subscriptions"
         ],
         "summary": "Update or swap a subscription",
-        "description": "Updates the status of a subscription, allowing actions such as cancelation, immediate cancelation, resumption, or executing a **swap** (upgrade/downgrade). To execute a swap, set `action` to `swap` and provide `variant_id` or `product_id` in the body.",
+        "description": "Updates or swaps an existing subscription:\n- `cancel`: Schedules cancellation at the end of the current billing period (`cancel_at_period_end: true`, `status` remains `active`/`trialing`). Dispatches `subscription.canceled` and `subscription.updated`.\n- `cancel_immediately`: Cancels the subscription immediately (`status: \"canceled\"`, `cancel_at_period_end: false`, and `current_period_end` is immediately updated to the termination timestamp). Dispatches `subscription.canceled`.\n- `resume`: Reverses a scheduled period-end cancellation (`cancel_at_period_end: false`). Dispatches `subscription.uncanceled` and `subscription.updated`.\n- `swap`: Immediately upgrades or downgrades the subscription to a new `variant_id` or `product_id` with automatic proration (`create_prorations`). Works in both Live and Test mode. Dispatches `subscription.upgraded` and `subscription.updated`.",
         "parameters": [
           {
             "name": "id",
@@ -1894,7 +1894,7 @@
           "Orders"
         ],
         "summary": "Issue a refund",
-        "description": "Programmatically issue a full or partial refund for an order.\n\n**Usage:** Headless event organizers managing bulk ticket cancellations directly from their custom admin panel without logging into Blink.",
+        "description": "Programmatically issue a full or partial refund for a one-time or subscription order. Automatically resolves the underlying Stripe PaymentIntent (including subscription invoice payments) and dispatches the `order.refunded` webhook.",
         "parameters": [
           {
             "name": "id",
@@ -1932,6 +1932,45 @@
           },
           "401": {
             "description": "Unauthorized"
+          },
+          "201": {
+            "description": "Refund created successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "order_id": {
+                          "type": "string"
+                        },
+                        "refund_id": {
+                          "type": "string"
+                        },
+                        "amount": {
+                          "type": "integer",
+                          "description": "Refunded amount in cents."
+                        },
+                        "status": {
+                          "type": "string",
+                          "example": "succeeded"
+                        },
+                        "reason": {
+                          "type": "string",
+                          "nullable": true
+                        },
+                        "created_at": {
+                          "type": "string",
+                          "format": "date-time"
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           }
         }
       }
@@ -2349,7 +2388,7 @@
           "Subscriptions"
         ],
         "summary": "Preview a subscription swap",
-        "description": "Preview the prorated invoice amounts for a potential subscription swap.",
+        "description": "Previews the prorated invoice amounts (`amount_due`, `subtotal`, `currency`, and line-item `prorations`) for swapping an active or trialing subscription to a new `variant_id` or `product_id`. Works in both Live and Test mode.",
         "parameters": [
           {
             "name": "id",
@@ -2386,7 +2425,61 @@
         ],
         "responses": {
           "200": {
-            "description": "Successful response"
+            "description": "Proration preview calculated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "data": {
+                      "type": "object",
+                      "properties": {
+                        "amount_due": {
+                          "type": "integer",
+                          "description": "Net prorated amount due in cents."
+                        },
+                        "subtotal": {
+                          "type": "integer",
+                          "description": "Subtotal in cents."
+                        },
+                        "currency": {
+                          "type": "string",
+                          "example": "usd"
+                        },
+                        "prorations": {
+                          "type": "array",
+                          "items": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "amount": {
+                                "type": "integer"
+                              },
+                              "description": {
+                                "type": "string"
+                              },
+                              "period": {
+                                "type": "object",
+                                "properties": {
+                                  "start": {
+                                    "type": "integer"
+                                  },
+                                  "end": {
+                                    "type": "integer"
+                                  }
+                                }
+                              }
+                            }
+                          }
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+            }
           },
           "400": {
             "description": "Bad Request"
@@ -3761,39 +3854,40 @@
             "type": "object",
             "properties": {
               "id": {
-                "type": "string"
+                "type": "string",
+                "description": "Unique Blink checkout session UUID."
               },
               "url": {
-                "type": "string"
+                "type": "string",
+                "description": "The hosted checkout URL to redirect the buyer to (or pass to `window.Blink.openCheckout(url)`)."
               },
               "status": {
-                "type": "string"
-              },
-              "payment_status": {
-                "type": "string"
-              },
-              "customer_email": {
-                "type": "string"
-              },
-              "amount_total": {
-                "type": "integer"
-              },
-              "currency": {
-                "type": "string"
+                "type": "string",
+                "example": "open"
               },
               "product_id": {
                 "type": "string"
               },
               "variant_id": {
-                "type": "string"
-              },
-              "expires_at": {
                 "type": "string",
-                "format": "date-time"
+                "nullable": true
               },
-              "created_at": {
+              "amount": {
+                "type": "integer",
+                "description": "Checkout price in cents (minor currency units)."
+              },
+              "currency": {
                 "type": "string",
-                "format": "date-time"
+                "example": "usd"
+              },
+              "is_test": {
+                "type": "boolean",
+                "description": "True if created with a `blnk_test_` key."
+              },
+              "custom_data": {
+                "type": "object",
+                "nullable": true,
+                "description": "Echoed `custom_data` object passed during checkout creation."
               }
             }
           }
@@ -3831,13 +3925,16 @@
         "type": "object",
         "properties": {
           "product_id": {
-            "type": "string"
+            "type": "string",
+            "description": "UUID of the product to purchase."
           },
           "variant_id": {
-            "type": "string"
+            "type": "string",
+            "description": "Optional UUID of the specific product variant."
           },
           "customer_email": {
-            "type": "string"
+            "type": "string",
+            "description": "Pre-fill the buyer email address on the checkout form."
           },
           "discount_code": {
             "type": "string"
@@ -3852,7 +3949,8 @@
             }
           },
           "success_url": {
-            "type": "string"
+            "type": "string",
+            "description": "URL to redirect the buyer to after a successful payment. Supports dynamic placeholders: `{CHECKOUT_SESSION_ID}` (or `{CHECKOUT_ID}`), `{ORDER_ID}`, `{SUBSCRIPTION_ID}`, and `{PAYMENT_INTENT_ID}`."
           },
           "cancel_url": {
             "type": "string"
@@ -3861,14 +3959,16 @@
             "type": "string"
           },
           "return_url": {
-            "type": "string"
+            "type": "string",
+            "description": "Fallback redirect URL (alias for `success_url` / `cancel_url`). Supports `{CHECKOUT_SESSION_ID}`, `{ORDER_ID}`, `{SUBSCRIPTION_ID}`, and `{PAYMENT_INTENT_ID}`."
           },
           "metadata": {
-            "type": "object"
+            "type": "object",
+            "description": "Optional key-value metadata object. If `custom_data` is omitted, `metadata` is automatically used as `custom_data`."
           },
           "custom_data": {
             "type": "object",
-            "description": "Arbitrary JSON data that you can attach to the checkout session. This data will be echoed back verbatim in the order.created and order.paid webhooks."
+            "description": "Arbitrary JSON object to attach to the checkout session (e.g., `{\"user_id\": \"usr_123\"}`). Persisted onto the resulting Order and Subscription (`custom_data`) and echoed back verbatim at `data.custom_data` in `checkout.created`, `order.created`, `order.paid`, and all `subscription.*` webhooks."
           },
           "seat_quantity": {
             "type": "integer",
@@ -3922,12 +4022,22 @@
                 "items": {
                   "type": "object"
                 }
+              },
+              "lock_email": {
+                "type": "boolean",
+                "default": false,
+                "description": "Alternative location for `lock_email`. Locks the pre-filled `customer_email` field on the checkout page."
               }
             }
           },
           "custom_checkout_id": {
             "type": "string",
             "description": "UUID of the custom checkout design"
+          },
+          "lock_email": {
+            "type": "boolean",
+            "default": false,
+            "description": "When true (and `customer_email` is provided), locks the email input on the checkout page so the buyer cannot modify it."
           }
         },
         "required": [
@@ -4115,6 +4225,54 @@
                     "custom_data": {
                       "type": "object",
                       "description": "Custom data passed during checkout creation"
+                    }
+                  }
+                },
+                "subscription_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "Associated Blink subscription UUID if this order is for a recurring product."
+                },
+                "customer_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "The Blink customer UUID."
+                },
+                "is_test": {
+                  "type": "boolean",
+                  "description": "True if the order was placed in Test Mode."
+                },
+                "custom_data": {
+                  "type": "object",
+                  "nullable": true,
+                  "description": "Custom data object attached during checkout creation."
+                },
+                "customer": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string",
+                      "nullable": true
+                    },
+                    "email": {
+                      "type": "string",
+                      "nullable": true
+                    }
+                  }
+                },
+                "variant": {
+                  "type": "object",
+                  "nullable": true,
+                  "properties": {
+                    "id": {
+                      "type": "string"
+                    },
+                    "name": {
+                      "type": "string"
                     }
                   }
                 }
@@ -6025,7 +6183,8 @@
               },
               "current_period_end": {
                 "type": "string",
-                "format": "date-time"
+                "format": "date-time",
+                "description": "ISO 8601 timestamp when the current billing period ends. When canceled immediately, this is updated to the immediate cancellation timestamp."
               },
               "cancel_at_period_end": {
                 "type": "boolean"
@@ -6111,6 +6270,20 @@
                     "description": "The number of intervals between subscription billings."
                   }
                 }
+              },
+              "customer_id": {
+                "type": "string",
+                "nullable": true,
+                "description": "The Blink customer UUID."
+              },
+              "custom_data": {
+                "type": "object",
+                "nullable": true,
+                "description": "Custom data object attached during checkout creation."
+              },
+              "is_test": {
+                "type": "boolean",
+                "description": "True if this subscription was created in Test Mode."
               }
             }
           }
@@ -6126,15 +6299,16 @@
               "cancel_immediately",
               "resume",
               "swap"
-            ]
+            ],
+            "description": "`cancel` (at period end), `cancel_immediately` (terminate now and set `current_period_end` to now), `resume` (undo pending cancel), or `swap` (change plan/variant with proration)."
           },
           "variant_id": {
             "type": "string",
-            "description": "Required if action is swap"
+            "description": "Target variant UUID when `action` is `swap`."
           },
           "product_id": {
             "type": "string",
-            "description": "Required if action is swap"
+            "description": "Target product UUID when `action` is `swap` (optional if `variant_id` is provided)."
           }
         },
         "required": [
@@ -6192,6 +6366,20 @@
                 },
                 "stripe_customer_id": {
                   "type": "string"
+                },
+                "customer_id": {
+                  "type": "string",
+                  "nullable": true,
+                  "description": "The Blink customer UUID."
+                },
+                "custom_data": {
+                  "type": "object",
+                  "nullable": true,
+                  "description": "Custom data object attached during checkout creation."
+                },
+                "is_test": {
+                  "type": "boolean",
+                  "description": "True if this subscription was created in Test Mode."
                 }
               }
             }

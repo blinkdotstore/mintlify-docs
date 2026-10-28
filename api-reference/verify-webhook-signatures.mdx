@@ -13,6 +13,7 @@ When Blink sends a webhook to your server, it includes the following headers:
 - `Blink-Signature`: The cryptographic signature of the payload (e.g., `v1=a1b2c3d4...`)
 - `Blink-Timestamp`: The unix timestamp (in seconds) when the event was dispatched.
 - `Blink-Event`: The name of the event (e.g., `order.paid`).
+- `Blink-Event-Id`: The unique identifier for the webhook event (e.g., `evt_9b1deb4d...`), matching the top-level `id` field in the JSON body. Use this value for idempotency / deduplication.
 
 ## How to Verify the Signature
 
@@ -96,17 +97,21 @@ As a best practice to prevent replay attacks, the SDK automatically checks that 
 
 Blink sends webhooks for both **Test** (simulated) purchases and **Live** (real) purchases. An attacker could use a test card on your storefront checkout to trigger a perfectly valid, signed webhook.
 
-To avoid accidentally giving away your product for free, you must always explicitly check the `mode` parameter in the webhook JSON payload:
+To avoid accidentally giving away your product for free, you must always explicitly check the `is_test` boolean inside `event.data`:
 
 ```json
 {
+  "id": "evt_9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
   "event": "order.paid",
-  "mode": "live",
-  // ...
+  "created_at": "2026-10-28T08:00:00.000Z",
+  "data": {
+    "id": "ord_12345",
+    "is_test": false
+  }
 }
 ```
 
-If your integration is in production, you should ignore or drop any webhooks where `mode === 'test'`.
+If your integration is in production, you should ignore or route separately any webhooks where `event.data.is_test === true`.
 </Warning>
 
 ## Manual Verification (Without SDK)

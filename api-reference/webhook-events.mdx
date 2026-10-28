@@ -6,21 +6,34 @@ description: "A complete reference of all webhook events supported by Blink."
 When you register a webhook endpoint, you can subscribe to specific events. Below is the comprehensive list of all events you can listen for across the Blink platform.
 
 <Warning>
-**Security Warning:** Blink sends webhooks for both **Test** (simulated) events and **Live** (real) events. To avoid giving away free products when a customer uses a test credit card, you must explicitly verify that the webhook mode is live (e.g. `is_test: false` or `mode: "live"`) before fulfilling the order. 
+**Security Warning:** Blink sends webhooks for both **Test** (simulated) events and **Live** (real) events. To avoid giving away free products when a customer uses a test credit card, you must explicitly verify that `data.is_test === false` before fulfilling the order or granting live entitlements.
 </Warning>
+
 ## Event Payload Structure
 
-All events share a standard wrapper structure. The `data` property contains the specific object related to the event.
+All events share a standard wrapper structure:
+- `id`: A unique identifier for the webhook event (`evt_...`), also sent in the `Blink-Event-Id` HTTP header.
+- `event`: The event type (e.g. `order.paid`, `subscription.canceled`).
+- `created_at`: ISO 8601 timestamp of when the event was dispatched.
+- `data`: The resource object related to the event.
 
 ```json
 {
+  "id": "evt_9b1deb4d-3b7d-4bad-9bdd-2b0d7b3dcb6d",
   "event": "order.paid",
   "created_at": "2026-07-28T09:00:00.000Z",
   "data": {
     "id": "ord_12345",
+    "product_id": "prod_abc",
+    "variant_id": "var_789",
+    "subscription_id": "sub_456",
+    "customer_id": "cus_xyz",
     "amount": 2000,
     "status": "paid",
     "is_test": false,
+    "custom_data": {
+      "app_user_id": "usr_42"
+    },
     "customer": {
       "id": "cus_xyz",
       "name": "Jane Doe",
@@ -37,20 +50,31 @@ All events share a standard wrapper structure. The `data` property contains the 
 }
 ```
 
+<Tip>
+**Idempotency & Retries:** Every webhook includes a unique `id` (`evt_...`) in the JSON body and in the `Blink-Event-Id` header. Manual or automatic retries resend the **exact same `id`**. Store processed event IDs to prevent duplicate fulfillment, and only mark an `event.id` as processed **after** your handler finishes successfully so failed attempts can be safely retried.
+</Tip>
+
+## Event Ordering
+
+Blink dispatches purchase and subscription webhooks in a deterministic sequence:
+
+- **One-Time Purchase:** `checkout.created` → `order.created` → `order.paid` → `checkout.completed`
+- **Initial Subscription Purchase:** `checkout.created` → `order.created` → `order.paid` → `subscription.created` → `checkout.completed`
+- **Subscription Renewal (Recurring Cycle):** `order.created` → `order.paid`
 
 ## Orders
 | Event Name | Description |
 |---|---|
-| `order.created` | Fired when a new order is placed. |
-| `order.paid` | Fired when payment is confirmed on an order. |
-| `order.refunded` | Fired when an order is refunded. |
+| `order.created` | Fired when a new order is placed. Includes `custom_data` if provided at checkout. |
+| `order.paid` | Fired when payment is confirmed on an order. Includes `custom_data` if provided at checkout. |
+| `order.refunded` | Fired when an order is refunded (full or partial). |
 
 ## Checkouts
 | Event Name | Description |
 |---|---|
-| `checkout.created` | Fired when a checkout session is created. |
-| `checkout.completed` | Fired when a checkout is completed. |
-| `checkout.expired` | Fired when a checkout session expires. |
+| `checkout.created` | Fired when a checkout session is created via `POST /v1/checkouts`. |
+| `checkout.completed` | Fired when a checkout session is completed. |
+| `checkout.expired` | Fired when a checkout session expires without payment. |
 
 ## Audience
 | Event Name | Description |
@@ -69,14 +93,55 @@ All events share a standard wrapper structure. The `data` property contains the 
 ## Subscriptions
 | Event Name | Description |
 |---|---|
-| `subscription.created` | Fired when a subscription starts. |
-| `subscription.active` | Fired when a subscription becomes active. |
-| `subscription.updated` | Fired when a subscription is updated. |
-| `subscription.canceled` | Fired when a subscription is canceled. |
-| `subscription.uncanceled` | Fired when a cancellation is reversed. |
-| `subscription.past_due` | Fired when a payment fails, making the subscription past due. |
-| `subscription.revoked` | Fired when a subscription is forcefully ended. |
-| `subscription.upgraded` | Fired when a subscription is upgraded or downgraded. |
+| `subscription.created` | Fired when a new subscription starts (immediately after `order.paid`). |
+| `subscription.active` | Fired when a subscription transitions to active. |
+| `subscription.updated` | Fired whenever a subscription state, period, or plan changes. |
+| `subscription.canceled` | Fired both when a subscription is scheduled to cancel at period end (`cancel_at_period_end: true`, `status: "active"`) **and** when a subscription is canceled immediately (`cancel_at_period_end: false`, `status: "canceled"`, with `current_period_end` updated to the termination timestamp). |
+| `subscription.uncanceled` | Fired when a scheduled period-end cancellation is reversed/resumed (`cancel_at_period_end: false`). |
+| `subscription.upgraded` | Fired when a subscription's product or variant is swapped (`action: "swap"`). |
+| `subscription.past_due` | Fired when a renewal payment fails, making the subscription `past_due`. |
+| `subscription.revoked` | Fired when a subscription is terminated at the end of a canceled billing period or forcefully revoked. |
+| `subscription.expired` | Fired when a subscription that was scheduled to cancel at period end reaches the end of its billing cycle and expires. |
+
+### Subscription Webhook Payload Example
+
+All `subscription.*` events include the Blink `customer_id`, `current_period_end`, `cancel_at_period_end`, `canceled_at`, `is_test`, and any `custom_data` passed during checkout creation:
+
+```json
+{
+  "id": "evt_4c8f1a20-88e1-41f0-9a11-712a98b12c01",
+  "event": "subscription.canceled",
+  "created_at": "2026-10-28T08:00:00.000Z",
+  "data": {
+    "id": "029bd166-9f1e-4208-ad10-1ae1c4f1bf9e",
+    "product_id": "prod_abc",
+    "variant_id": "var_789",
+    "customer_id": "cus_blink_uuid",
+    "status": "active",
+    "current_period_end": "2026-11-28T08:00:00.000Z",
+    "cancel_at_period_end": true,
+    "canceled_at": "2026-10-28T08:00:00.000Z",
+    "is_test": false,
+    "custom_data": {
+      "app_user_id": "usr_42"
+    },
+    "customer": {
+      "id": "cus_blink_uuid",
+      "name": "Jane Doe",
+      "email": "jane@example.com"
+    },
+    "product": {
+      "id": "prod_abc",
+      "name": "Premium Plan"
+    }
+  }
+}
+```
+<Info>
+**Immediate vs. Period-End Cancellation:**
+- **Cancel at period end (`cancel`):** `status` remains `"active"`, `cancel_at_period_end` becomes `true`, and `current_period_end` remains the future date when access ends. When that date arrives, `subscription.revoked` and `subscription.expired` fire with `status: "canceled"`.
+- **Cancel immediately (`cancel_immediately`):** `status` immediately becomes `"canceled"`, `cancel_at_period_end` is `false`, and `current_period_end` is immediately updated to the cancellation timestamp so code that checks `new Date(current_period_end) > new Date()` revokes access right away.
+</Info>
 
 ## Products
 | Event Name | Description |
